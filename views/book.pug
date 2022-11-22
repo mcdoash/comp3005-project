@@ -1,0 +1,29 @@
+extends layout
+
+block content
+    section#main-info
+        #cover
+        #info
+            h1 #{book.title}
+            //-links
+            - let authors = book.authors.join(", ")
+            span#authors #{authors} 
+
+            p#description #{book.description}
+
+            #genres
+                each genre in book.genres
+                    button
+                        a(href="") #{genre} 
+
+            #book-data
+                p <b>Release Date:</b> #{book.release}
+                p <b>Format:</b> #{book.format}
+                p <b>Page count:</b> #{book.pages}
+                p <b>Publisher:</b> #{book.publisher}
+
+            //- format price - book.stock = 0
+            if book.stock > 0 
+                button#buy $#{book.price} - Add to Cart
+            else   
+                button#buy(disabled) Out of Stock

@@ -1,0 +1,16 @@
+{
+  "name": "comp3005-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "pug": "^3.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Ashley McDonald (101119938)",
+  "license": "ISC"
+}

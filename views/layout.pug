@@ -1,0 +1,12 @@
+include mixins
+html(lang="en")
+    head
+        title #{title}
+        block css
+            +css("main")
+
+    body
+        #content
+            block content
+    
+    block scripts

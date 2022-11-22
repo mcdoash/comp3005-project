@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    section#book-list
+        each book in books
+            .result
+                a.cover(href="/books/" + book.isbn)
+                    img(src=book.cover)
+                .book-data
+                    h2
+                        a(href="/books/" + book.isbn) #{book.title}
+                    - let authors = book.authors.join(", ");
+                    span.authors #{authors}
