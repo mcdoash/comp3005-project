@@ -67,11 +67,6 @@ for(let i=0; i<5; i++) {
     }
     isbns.push(newIsbn);
 
-    const randYear = Math.floor(Math.random() * 75) + 1950;
-    const randMonth = Math.floor(Math.random() * 13) + 1;
-    const randDay = Math.floor(Math.random() * 29) + 1;
-    const randDate = new Date(randYear, randMonth, randDay);
-
     bookList.push(
         "('" + newIsbn + "','" +
         faker.random.words() + "','" +
@@ -81,7 +76,7 @@ for(let i=0; i<5; i++) {
         faker.commerce.price(5, 150, 2) + "," +
         (Math.floor(Math.random() * 950) + 20) + ",'" +
         formats[Math.floor(Math.random() * formats.length)] + "','" +
-        randDate + "," +
+        faker.date.between('1930-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z') + "," +
         Math.floor(Math.random() * 25001) + "," + 
         Math.floor(Math.random() * 5001) + "," +
         (Math.floor(Math.random() * 50) + 1) + ")"
@@ -141,6 +136,73 @@ isbns.forEach((book) => {
 });
 genreList = genreList.join();
 authorList = authorList.join();
+
+
+let userList = [];
+let userEmails = [];
+for(let i=0; i<5; i++) {
+    const fName = faker.name.firstName();
+    const lName = faker.name.lastName();
+    let newEmail = faker.internet.email(fName, lName);
+    while(newEmail.length > 30 || userEmails.includes(newEmail)) {
+        newEmail = faker.internet.email(fName, lName);
+    }
+    userEmails.push(newEmail);
+
+    userList.push(
+        "('" + newEmail + "','" +
+        fName + "','" +
+        lName + "')"
+    );
+}
+userList = userList.join();
+
+
+let addressList = [];
+userEmails.forEach((user) => {
+    const addressNum = Math.floor(Math.random() * 3);
+    let thisCards = [];
+
+    //create addresses
+    for(let i=0; i<addressNum; i++) {
+        const newProv = faker.address.stateAbbr();
+        addressList.push( 
+            "(DEFAULT,'" + 
+            user + "','" +
+            faker.name.firstName() + "','" +
+            faker.name.lastName() + "','" +
+            faker.address.streetAddress() + "','" +
+            faker.address.city() + "','" +
+            newProv + "','" +
+            faker.address.zipCodeByState(newProv) + "'," +
+            "'USA','" +
+            faker.phone.phoneNumber("###-###-####") + "')"
+        );
+    }
+});
+addressList = addressList.join();
+
+
+//fix later
+//create a card after address in db using pk to satisfy address foriegn key
+let cardList = [];
+userEmails.forEach((user) => {
+    let newCard = parseInt(faker.finance.creditCardNumber("################"));
+    while(thisCards.includes(newCard)) {
+        newCard = parseInt(faker.finance.creditCardNumber("################"));
+    }
+
+    cardList.push(
+        "(DEFAULT'" + 
+        user + "'," +
+        newCard + "," +
+        faker.date.between('2023-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z') + "," +
+        parseInt(faker.finance.creditCardCVV()) + "," + 
+        i + ")" //fix
+    );
+});
+cardList = cardList.join();
+
 
 
 /*
