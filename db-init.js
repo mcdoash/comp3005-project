@@ -1,13 +1,12 @@
 const faker = require("faker");
 
-
-//non-escaped single quotes break queries later
+//non-escaped single quotes will break queries. check sting for these and escape if found
 function checkQuotes(str) {
     return str.replace("'", "''");
 }
 
 
-/*Publisher table*/
+//Publisher table
 let publisherList = [];
 let pubNames = [];
 for(let i=0; i<3; i++) {
@@ -38,11 +37,10 @@ for(let i=0; i<3; i++) {
         faker.finance.account() + "')"
     );
 }
-//console.log(publisherList);
 publisherList = publisherList.join()
 
 
-/*Contact table*/
+//Contact table
 let contactList = [];
 let phoneNums = [];
 for(let i=0; i<5; i++) {
@@ -57,7 +55,7 @@ for(let i=0; i<5; i++) {
 contactList = contactList.join();
 
 
-/*Phone_num table*/
+//Phone_num table
 let numList = [];
 phoneNums.forEach((num) => {
     numList.push("('" + num + "','" + pubNames[Math.floor(Math.random() * pubNames.length)] + "','" + faker.name.jobType() + "')");
@@ -65,6 +63,8 @@ phoneNums.forEach((num) => {
 numList = numList.join();
 
 
+
+//Book table
 let bookList = [];
 let isbns = [];
 let formats = ["Paperback", "Hardcover"];
@@ -90,7 +90,6 @@ for(let i=0; i<50; i++) {
         (Math.floor(Math.random() * 50) + 1) + ")"
     );
 }
-//console.log(bookList);
 bookList = bookList.join();
 
 function randIsbn() {
@@ -103,14 +102,18 @@ function randIsbn() {
 
 
 
+//Genre and Authored tables
 let genreList = [];
 let genreOpts = ["Fantasy", "Science Fiction", "Mystery", "Horror", "Speculative Fiction", "Historical Fiction", "Romance", "Graphic Novel", "Young Adult", "Children''s", "Memoir", "Biography", "Food and Drink", "Photography", "History", "Travel", "True Crime",  "Technology"]; //from https://blog.reedsy.com/book-genres/  non-fiction vs. fiction??
+
 let authorList = [];
 let authorNames = [];
+
 isbns.forEach((book) => {
     let genreNum = Math.floor(Math.random() * 3) + 1;
     let thisGenres = [];
 
+    //make genres
     for(let i=0; i<genreNum; i++) {
         let newGenre = genreOpts[Math.floor(Math.random() * genreOpts.length)];
         while(thisGenres.includes(newGenre)) {
@@ -120,18 +123,21 @@ isbns.forEach((book) => {
         genreList.push("('" + newGenre + "','" + book + "')");
     }
 
+    //make authors
     let authorNum = Math.floor(Math.random() * 4) + 1;
     let thisAuthors = [];
     for(let i=0; i<authorNum; i++) {
+        //decided if a new author should be created or an existing one used
         let sameAuth = Math.floor(Math.random() * 4);
         let newAuth = "";
-        if(sameAuth == 0 && authorNames.length > authorNum) {
+
+        if(sameAuth == 0 && authorNames.length > authorNum) { //use pre-existing
             newAuth = authorNames[Math.floor(Math.random() * authorNames.length)];
             while(thisAuthors.includes(newAuth)) {
                 newAuth = authorNames[Math.floor(Math.random() * authorNames.length)];
             }
         }
-        else {
+        else { //make new
             newAuth = checkQuotes(faker.name.findName());
             while(authorNames.includes(newAuth)) {
                 newAuth = checkQuotes(faker.name.findName());
@@ -143,12 +149,11 @@ isbns.forEach((book) => {
     }
 
 });
-//console.log(genreList);
-//console.log(authorList);
 genreList = genreList.join();
 authorList = authorList.join();
 
 
+//Account table
 let userList = [];
 let userEmails = [];
 for(let i=0; i<5; i++) {
@@ -170,11 +175,9 @@ userList = userList.join();
 
 
 
+//Address, Card, Book_order and Sale tables
 let addressList = [];
-let addressId = 0;
-
 let cardList = [];
-let cardId = 0;
 
 let orderList = [];
 let locationOpts = ["DEFAULT", "'Destination'", "'Warehouse'", "'Local Postal Office'"];
@@ -199,7 +202,6 @@ userEmails.forEach((user) => {
             "'USA','" +
             faker.phone.phoneNumber("###-###-####") + "')"
         );
-        addressId++;
 
         //make cards
         let addCard = Math.floor(Math.random() * 5);
@@ -215,9 +217,8 @@ userEmails.forEach((user) => {
                 checkQuotes(faker.name.findName()) + "','" +
                 faker.date.between("2023-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z").toISOString() + "'," +
                 parseInt(faker.finance.creditCardCVV()) + "," + 
-                addressId + ")" 
+                addressList.length + ")" 
             );
-            cardId++;
 
             //make orders
             let orderAmount = Math.floor(Math.random() * 6);
@@ -248,7 +249,7 @@ userEmails.forEach((user) => {
                 let orderDate = (faker.date.between("2022-01-01T00:00:00.000Z", "2022-12-09T00:00:00.000Z")).toISOString();
 
                 let arrival, expected;
-                if(currLocation == "Destination") {
+                if(currLocation == "'Destination'") {
                     arrival = "'" + (faker.date.between(orderDate, faker.date.soon(20, orderDate))).toISOString() + "'";
                     expected = arrival;
                 }
@@ -261,9 +262,9 @@ userEmails.forEach((user) => {
                     "(DEFAULT,'" + 
                     user + "'," +
                     orderTotal + "," +
-                    cardId + "," +
-                    addressId + ",'" +
-                    orderDate + "'," +
+                    cardList.length + "," +
+                    addressList.length + ",'" +
+                    orderDate + "','" +
                     "https://tracking-site.com/track/" + (orderList.length + 1) + "'," +
                     currLocation + "," +
                     expected + "," +
@@ -273,43 +274,13 @@ userEmails.forEach((user) => {
         }
     }
 });
-//console.log(addressList);
 addressList = addressList.join();
-//console.log(cardList);
 cardList = cardList.join();
-console.log(orderList);
 orderList = orderList.join();
-console.log(saleList);
 saleList = saleList.join();
 
-/*
-console.log("\nTest");
-let currLocation = locationOpts[Math.floor(Math.random() * locationOpts.length)];
-console.log(currLocation);
-
-let orderDate = (faker.date.between("2022-01-01T00:00:00.000Z", "2022-12-09T00:00:00.000Z"));//.toISOString();
-console.log("Order date: " + orderDate);
-console.log("Soon: " + faker.date.soon(20, orderDate));
-console.log("Btwn: " + faker.date.between(orderDate, faker.date.soon(20, orderDate)) + "\n");
-
-let arrival, expected;
-if(currLocation == "'Destination'") {
-    console.log("merp");
-    //arrival = "'" + (faker.date.between(orderDate, faker.date.soon(20, orderDate))).toISOString + "'";
-    arrival = (faker.date.between(orderDate, faker.date.soon(20, orderDate))).toISOString;
-    console.log(arrival);
-    arrival = "'" + arrival + "'";
-    expected = arrival;
-}
-else {
-    arrival = "NULL";
-    expected = "'" + (faker.date.soon(10)).toISOString + "'";
-}
-console.log("Expected date: " + expected);
-console.log("Arrival date: " + arrival);*/
 
 
-/*
 const { Client } = require("pg");
 let db = new Client({
     host: "localhost",
@@ -336,28 +307,24 @@ function clearData() {
 
 function addData() {
     const addQuery = 
-        //"INSERT INTO Publisher VALUES" + publisherList + ";" +
-        //"INSERT INTO Contact VALUES" + contactList + ";" +
-        //"INSERT INTO Phone_num VALUES" + numList + ";" +
-        //"INSERT INTO Book VALUES" + bookList + ";" +
-        //"INSERT INTO Genre VALUES" + genreList + ";" +
-        //"INSERT INTO Authored VALUES" + authorList + ";" +
+        "INSERT INTO Publisher VALUES" + publisherList + ";" +
+        "INSERT INTO Contact VALUES" + contactList + ";" +
+        "INSERT INTO Phone_num VALUES" + numList + ";" +
+        "INSERT INTO Book VALUES" + bookList + ";" +
+        "INSERT INTO Genre VALUES" + genreList + ";" +
+        "INSERT INTO Authored VALUES" + authorList + ";" +
         "INSERT INTO Account VALUES" + userList + ";" +
         "INSERT INTO Address VALUES" + addressList + ";" +
-        "INSERT INTO Card VALUES" + cardList + ";" ;//+
-        //"INSERT INTO Book_order VALUES" + orderList + ";" +
-        //"INSERT INTO Sale VALUES" + csaleList + ";"
-        //" RETURNING *";
-    //const query = "";
-    //const query = "INSERT INTO Publisher VALUES" + publisherList + " RETURNING *";
-    //const query = "SELECT * FROM Publisher LIMIT 1";
-
-    console.log(addQuery);
+        "INSERT INTO Card VALUES" + cardList + ";" +
+        "INSERT INTO Book_order VALUES" + orderList + ";" +
+        "INSERT INTO Sale VALUES" + saleList + ";";
+    //console.log(addQuery);
 
     db
       .query(addQuery)
       .then(res => {
-          console.log(res.rows);
+          console.log("Database populated successfully");
+          db.end();
           //check();
       })
       .catch(err => {
@@ -375,4 +342,4 @@ function check() {
       })
       .catch(err => console.error(err.stack))
       .then(() => db.end())
-}*/
+}
