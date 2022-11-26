@@ -68,7 +68,7 @@ numList = numList.join();
 let bookList = [];
 let isbns = [];
 let formats = ["Paperback", "Hardcover"];
-for(let i=0; i<5; i++) {
+for(let i=0; i<50; i++) {
     let newIsbn = randIsbn();
     while(isbns.includes(newIsbn)) {
         newIsbn = randIsbn();
@@ -169,12 +169,21 @@ for(let i=0; i<5; i++) {
 userList = userList.join();
 
 
+
 let addressList = [];
 let addressId = 0;
 
 let cardList = [];
+let cardId = 0;
+
+let orderList = [];
+let locationOpts = ["DEFAULT", "'Destination'", "'Warehouse'", "'Local Postal Office'"];
+let saleList = [];
+
 userEmails.forEach((user) => {
     let thisCards = [];
+
+    //make addresses
     const addressNum = Math.floor(Math.random() * 3);
     for(let i=0; i<addressNum; i++) {
         const newProv = faker.address.stateAbbr();
@@ -208,6 +217,59 @@ userEmails.forEach((user) => {
                 parseInt(faker.finance.creditCardCVV()) + "," + 
                 addressId + ")" 
             );
+            cardId++;
+
+            //make orders
+            let orderAmount = Math.floor(Math.random() * 6);
+            for(let i=1; i<orderAmount; i++) {
+                let bookNum = Math.floor(Math.random() * 14) + 1;
+                let thisBooks = [];
+
+                let orderTotal = faker.commerce.price(5 * bookNum, 100 * bookNum, 2);//fix to actual total
+
+                //create sales
+                for(let x=0; x<bookNum; x++) {
+                    //get book to add to order
+                    let newIsbn = isbns[Math.floor(Math.random() * isbns.length)];
+                    while(thisBooks.includes(newIsbn)) {
+                        newIsbn = isbns[Math.floor(Math.random() * isbns.length)];
+                    }
+                    thisBooks.push(newIsbn);
+
+                    saleList.push(
+                        "('" + newIsbn + "'," + 
+                        (orderList.length + 1) + "," +
+                        (Math.floor(Math.random() * 4) + 1) + ")"
+                    );
+                }
+
+                //create order dates
+                let currLocation = locationOpts[Math.floor(Math.random() * locationOpts.length)];
+                let orderDate = (faker.date.between("2022-01-01T00:00:00.000Z", "2022-12-09T00:00:00.000Z")).toISOString();
+
+                let arrival, expected;
+                if(currLocation == "Destination") {
+                    arrival = "'" + (faker.date.between(orderDate, faker.date.soon(20, orderDate))).toISOString() + "'";
+                    expected = arrival;
+                }
+                else {
+                    arrival = "NULL";
+                    expected = "'" + (faker.date.soon(10)).toISOString() + "'";
+                }
+
+                orderList.push(
+                    "(DEFAULT,'" + 
+                    user + "'," +
+                    orderTotal + "," +
+                    cardId + "," +
+                    addressId + ",'" +
+                    orderDate + "'," +
+                    "https://tracking-site.com/track/" + (orderList.length + 1) + "'," +
+                    currLocation + "," +
+                    expected + "," +
+                    arrival + ")"
+                );
+            }
         }
     }
 });
@@ -215,10 +277,39 @@ userEmails.forEach((user) => {
 addressList = addressList.join();
 //console.log(cardList);
 cardList = cardList.join();
+console.log(orderList);
+orderList = orderList.join();
+console.log(saleList);
+saleList = saleList.join();
+
+/*
+console.log("\nTest");
+let currLocation = locationOpts[Math.floor(Math.random() * locationOpts.length)];
+console.log(currLocation);
+
+let orderDate = (faker.date.between("2022-01-01T00:00:00.000Z", "2022-12-09T00:00:00.000Z"));//.toISOString();
+console.log("Order date: " + orderDate);
+console.log("Soon: " + faker.date.soon(20, orderDate));
+console.log("Btwn: " + faker.date.between(orderDate, faker.date.soon(20, orderDate)) + "\n");
+
+let arrival, expected;
+if(currLocation == "'Destination'") {
+    console.log("merp");
+    //arrival = "'" + (faker.date.between(orderDate, faker.date.soon(20, orderDate))).toISOString + "'";
+    arrival = (faker.date.between(orderDate, faker.date.soon(20, orderDate))).toISOString;
+    console.log(arrival);
+    arrival = "'" + arrival + "'";
+    expected = arrival;
+}
+else {
+    arrival = "NULL";
+    expected = "'" + (faker.date.soon(10)).toISOString + "'";
+}
+console.log("Expected date: " + expected);
+console.log("Arrival date: " + arrival);*/
 
 
-
-
+/*
 const { Client } = require("pg");
 let db = new Client({
     host: "localhost",
@@ -276,7 +367,7 @@ function addData() {
 }
 
 function check() {
-    const checkQuery = "SELECT ID FROM Address";
+    const checkQuery = "SELECT Card_id FROM Card";
     db
       .query(checkQuery)
       .then(res => {
@@ -284,4 +375,4 @@ function check() {
       })
       .catch(err => console.error(err.stack))
       .then(() => db.end())
-}
+}*/
