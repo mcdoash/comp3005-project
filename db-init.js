@@ -1,12 +1,19 @@
 const faker = require("faker");
 
+
+//non-escaped single quotes break queries later
+function checkQuotes(str) {
+    return str.replace("'", "''");
+}
+
+
 /*Publisher table*/
 let publisherList = [];
 let pubNames = [];
 for(let i=0; i<3; i++) {
-    let newName = faker.company.companyName() + " " + faker.company.companySuffix();
+    let newName = checkQuotes(faker.company.companyName() + " " + faker.company.companySuffix());
     while(newName.length > 30 || pubNames.includes(newName)) {
-        newName = faker.company.companyName() + " " + faker.company.companySuffix();
+        newName = checkQuotes(faker.company.companyName() + " " + faker.company.companySuffix());
     }
     pubNames.push(newName);
 
@@ -21,16 +28,17 @@ for(let i=0; i<3; i++) {
         "('" + newName + "','" +
         newEmail + "','" +
         newName + "','" +
-        faker.address.streetAddress() + "','" +
-        faker.address.city() + "','" +
+        checkQuotes(faker.address.streetAddress()) + "','" +
+        checkQuotes(faker.address.city()) + "','" +
         newProv + "','" +
-        faker.address.zipCodeByState(newProv) + "','" +
+        faker.address.zipCodeByState(newProv) + "'," +
         "'USA','" +
         faker.phone.phoneNumber("###-###-####") + "','" +
         newName + "','" +
         faker.finance.account() + "')"
     );
 }
+//console.log(publisherList);
 publisherList = publisherList.join()
 
 
@@ -44,7 +52,7 @@ for(let i=0; i<5; i++) {
     }
     phoneNums.push(newNum);
 
-    contactList.push("('" + newNum + "','" + faker.name.findName() + "')");
+    contactList.push("('" + newNum + "','" + checkQuotes(faker.name.findName()) + "')");
 }
 contactList = contactList.join();
 
@@ -69,19 +77,20 @@ for(let i=0; i<5; i++) {
 
     bookList.push(
         "('" + newIsbn + "','" +
-        faker.random.words() + "','" +
+        checkQuotes(faker.random.words()) + "','" +
         faker.image.abstract() + "','" +
         pubNames[Math.floor(Math.random() * pubNames.length)] + "','" +
-        faker.lorem.paragraphs() + "'," +
+        checkQuotes(faker.lorem.paragraphs(2, "<br/>")) + "'," +
         faker.commerce.price(5, 150, 2) + "," +
         (Math.floor(Math.random() * 950) + 20) + ",'" +
         formats[Math.floor(Math.random() * formats.length)] + "','" +
-        faker.date.between('1930-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z') + "," +
+        faker.date.between('1930-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z').toISOString() + "'," +
         Math.floor(Math.random() * 25001) + "," + 
         Math.floor(Math.random() * 5001) + "," +
         (Math.floor(Math.random() * 50) + 1) + ")"
     );
 }
+//console.log(bookList);
 bookList = bookList.join();
 
 function randIsbn() {
@@ -95,7 +104,7 @@ function randIsbn() {
 
 
 let genreList = [];
-let genreOpts = ["Fantasy", "Science Fiction", "Mystery", "Horror", "Speculative Fiction", "Historical Fiction", "Romance", "Graphic Novel", "Young Adult", "Children's", "Memoir", "Biography", "Food and Drink", "Photography", "History", "Travel", "True Crime",  "Technology"]; //from https://blog.reedsy.com/book-genres/  non-fiction vs. fiction??
+let genreOpts = ["Fantasy", "Science Fiction", "Mystery", "Horror", "Speculative Fiction", "Historical Fiction", "Romance", "Graphic Novel", "Young Adult", "Children''s", "Memoir", "Biography", "Food and Drink", "Photography", "History", "Travel", "True Crime",  "Technology"]; //from https://blog.reedsy.com/book-genres/  non-fiction vs. fiction??
 let authorList = [];
 let authorNames = [];
 isbns.forEach((book) => {
@@ -123,9 +132,9 @@ isbns.forEach((book) => {
             }
         }
         else {
-            newAuth = faker.name.findName();
+            newAuth = checkQuotes(faker.name.findName());
             while(authorNames.includes(newAuth)) {
-                newAuth = faker.name.findName();
+                newAuth = checkQuotes(faker.name.findName());
             }
             authorNames.push(newAuth);
         }
@@ -134,6 +143,8 @@ isbns.forEach((book) => {
     }
 
 });
+//console.log(genreList);
+//console.log(authorList);
 genreList = genreList.join();
 authorList = authorList.join();
 
@@ -141,8 +152,8 @@ authorList = authorList.join();
 let userList = [];
 let userEmails = [];
 for(let i=0; i<5; i++) {
-    const fName = faker.name.firstName();
-    const lName = faker.name.lastName();
+    const fName = checkQuotes(faker.name.firstName());
+    const lName = checkQuotes(faker.name.lastName());
     let newEmail = faker.internet.email(fName, lName);
     while(newEmail.length > 30 || userEmails.includes(newEmail)) {
         newEmail = faker.internet.email(fName, lName);
@@ -161,18 +172,15 @@ userList = userList.join();
 let addressList = [];
 userEmails.forEach((user) => {
     const addressNum = Math.floor(Math.random() * 3);
-    let thisCards = [];
-
-    //create addresses
     for(let i=0; i<addressNum; i++) {
         const newProv = faker.address.stateAbbr();
         addressList.push( 
             "(DEFAULT,'" + 
             user + "','" +
-            faker.name.firstName() + "','" +
-            faker.name.lastName() + "','" +
-            faker.address.streetAddress() + "','" +
-            faker.address.city() + "','" +
+            checkQuotes(faker.name.firstName()) + "','" +
+            checkQuotes(faker.name.lastName()) + "','" +
+            checkQuotes(faker.address.streetAddress()) + "','" +
+            checkQuotes(faker.address.city()) + "','" +
             newProv + "','" +
             faker.address.zipCodeByState(newProv) + "'," +
             "'USA','" +
@@ -184,9 +192,11 @@ addressList = addressList.join();
 
 
 //fix later
-//create a card after address in db using pk to satisfy address foriegn key
+//create a card after address in db using pk to satisfy address foriegn key 
+/*
 let cardList = [];
 userEmails.forEach((user) => {
+    let thisCards = [];
     let newCard = parseInt(faker.finance.creditCardNumber("################"));
     while(thisCards.includes(newCard)) {
         newCard = parseInt(faker.finance.creditCardNumber("################"));
@@ -201,11 +211,11 @@ userEmails.forEach((user) => {
         i + ")" //fix
     );
 });
-cardList = cardList.join();
+cardList = cardList.join();*/
 
 
 
-/*
+
 const { Client } = require("pg");
 let db = new Client({
     host: "localhost",
@@ -214,23 +224,59 @@ let db = new Client({
     password: "testPassword",
     database: "Project"
 });
-db.connect((err) => {
-    if(err) {
-        console.error("Cannot connect to the database", e.stack);
-    }
-    else {
-        console.log("Connection established");
-        addPub();
-    }
-});
+db
+  .connect()
+  .then(() => {
+      console.log("Database connected");
+      clearData();
+  })
+  .catch(err => console.error("Cannot connect to the database", err.stack))
+  
+function clearData() {
+    const delQuery = "TRUNCATE TABLE Publisher, Contact, Book, Account RESTART IDENTITY CASCADE;";
+    db
+      .query(delQuery)
+      .then(() => addData())
+      .catch(err => console.error(err.stack))
+}
 
-function addPub() {
-    const query = "INSERT INTO Publisher VALUES" + publisherList + " RETURNING *";
+function addData() {
+    const addQuery = 
+        //"INSERT INTO Publisher VALUES" + publisherList + ";" +
+        //"INSERT INTO Contact VALUES" + contactList + ";" +
+        //"INSERT INTO Phone_num VALUES" + numList + ";" +
+        //"INSERT INTO Book VALUES" + bookList + ";" +
+        //"INSERT INTO Genre VALUES" + genreList + ";" +
+        //"INSERT INTO Authored VALUES" + authorList + ";" +
+        "INSERT INTO Account VALUES" + userList + ";" +
+        "INSERT INTO Address VALUES" + addressList + ";";// +
+        //"INSERT INTO Card VALUES" + cardList + ";" +
+        //"INSERT INTO Book_order VALUES" + orderList + ";" +
+        //"INSERT INTO Sale VALUES" + csaleList + ";"
+        //" RETURNING *";
+    //const query = "";
+    //const query = "INSERT INTO Publisher VALUES" + publisherList + " RETURNING *";
+    //const query = "SELECT * FROM Publisher LIMIT 1";
 
-    console.log(query.text);
-    db.query(query, (err, res) => {
-        if(err) throw err;
-        console.log(res.rows);
-        db.end()
-    });
-}*/
+    console.log(addQuery);
+
+    db
+      .query(addQuery)
+      .then(res => {
+          console.log(res.rows);
+          check();
+      })
+      .catch(err => console.error(err.stack))
+}
+
+function check() {
+    const checkQuery = "SELECT ID FROM Address";
+    db
+      .query(checkQuery)
+      .then(res => {
+          console.log(res.rows);
+          checkAdd();
+      })
+      .catch(err => console.error(err.stack))
+      .then(() => db.end())
+}
