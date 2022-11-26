@@ -84,7 +84,7 @@ for(let i=0; i<5; i++) {
         faker.commerce.price(5, 150, 2) + "," +
         (Math.floor(Math.random() * 950) + 20) + ",'" +
         formats[Math.floor(Math.random() * formats.length)] + "','" +
-        faker.date.between('1930-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z').toISOString() + "'," +
+        faker.date.between("1930-01-01T00:00:00.000Z", "2025-01-01T00:00:00.000Z").toISOString() + "'," +
         Math.floor(Math.random() * 25001) + "," + 
         Math.floor(Math.random() * 5001) + "," +
         (Math.floor(Math.random() * 50) + 1) + ")"
@@ -170,7 +170,11 @@ userList = userList.join();
 
 
 let addressList = [];
+let addressId = 0;
+
+let cardList = [];
 userEmails.forEach((user) => {
+    let thisCards = [];
     const addressNum = Math.floor(Math.random() * 3);
     for(let i=0; i<addressNum; i++) {
         const newProv = faker.address.stateAbbr();
@@ -186,32 +190,31 @@ userEmails.forEach((user) => {
             "'USA','" +
             faker.phone.phoneNumber("###-###-####") + "')"
         );
+        addressId++;
+
+        //make cards
+        let addCard = Math.floor(Math.random() * 5);
+        if(addCard) {
+            let newCard = faker.finance.creditCardNumber("################");
+            while(thisCards.includes(newCard)) {
+                newCard = faker.finance.creditCardNumber("################");
+            }
+            cardList.push(
+                "(DEFAULT,'" + 
+                user + "','" +
+                newCard + "','" +
+                checkQuotes(faker.name.findName()) + "','" +
+                faker.date.between("2023-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z").toISOString() + "'," +
+                parseInt(faker.finance.creditCardCVV()) + "," + 
+                addressId + ")" 
+            );
+        }
     }
 });
+//console.log(addressList);
 addressList = addressList.join();
-
-
-//fix later
-//create a card after address in db using pk to satisfy address foriegn key 
-/*
-let cardList = [];
-userEmails.forEach((user) => {
-    let thisCards = [];
-    let newCard = parseInt(faker.finance.creditCardNumber("################"));
-    while(thisCards.includes(newCard)) {
-        newCard = parseInt(faker.finance.creditCardNumber("################"));
-    }
-
-    cardList.push(
-        "(DEFAULT'" + 
-        user + "'," +
-        newCard + "," +
-        faker.date.between('2023-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z') + "," +
-        parseInt(faker.finance.creditCardCVV()) + "," + 
-        i + ")" //fix
-    );
-});
-cardList = cardList.join();*/
+//console.log(cardList);
+cardList = cardList.join();
 
 
 
@@ -249,8 +252,8 @@ function addData() {
         //"INSERT INTO Genre VALUES" + genreList + ";" +
         //"INSERT INTO Authored VALUES" + authorList + ";" +
         "INSERT INTO Account VALUES" + userList + ";" +
-        "INSERT INTO Address VALUES" + addressList + ";";// +
-        //"INSERT INTO Card VALUES" + cardList + ";" +
+        "INSERT INTO Address VALUES" + addressList + ";" +
+        "INSERT INTO Card VALUES" + cardList + ";" ;//+
         //"INSERT INTO Book_order VALUES" + orderList + ";" +
         //"INSERT INTO Sale VALUES" + csaleList + ";"
         //" RETURNING *";
@@ -264,9 +267,12 @@ function addData() {
       .query(addQuery)
       .then(res => {
           console.log(res.rows);
-          check();
+          //check();
       })
-      .catch(err => console.error(err.stack))
+      .catch(err => {
+          console.error(err.stack);
+          db.end();
+      })
 }
 
 function check() {
@@ -275,7 +281,6 @@ function check() {
       .query(checkQuery)
       .then(res => {
           console.log(res.rows);
-          checkAdd();
       })
       .catch(err => console.error(err.stack))
       .then(() => db.end())
