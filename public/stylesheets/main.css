@@ -63,6 +63,15 @@ button:disabled {
   background-color: #ffffff;
 }
 
+section#book-list .cover {
+  width: 20vw;
+  display: inline-block;
+}
+
+section#book-list .cover img {
+  width: 100%;
+}
+
 /*book info page*/
 section#main-info {
   display: -ms-flexbox;

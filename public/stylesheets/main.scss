@@ -62,6 +62,16 @@ button {
     }
 }
 
+section#book-list {
+    .cover {
+        width: 20vw;
+        display: inline-block;
+
+        img {
+            width: 100%;
+        }
+    }
+}
 
 /*book info page*/
 section#main-info {
