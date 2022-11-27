@@ -9,7 +9,7 @@ function checkQuotes(str) {
 //Publisher table
 let publisherList = [];
 let pubNames = [];
-for(let i=0; i<3; i++) {
+for(let i=0; i<100; i++) {
     let newName = checkQuotes(faker.company.companyName() + " " + faker.company.companySuffix());
     while(newName.length > 30 || pubNames.includes(newName)) {
         newName = checkQuotes(faker.company.companyName() + " " + faker.company.companySuffix());
@@ -43,7 +43,7 @@ publisherList = publisherList.join()
 //Contact table
 let contactList = [];
 let phoneNums = [];
-for(let i=0; i<5; i++) {
+for(let i=0; i<250; i++) {
     let newNum = faker.phone.phoneNumber("###-###-####");
     while(phoneNums.includes(newNum)) {
         newNum = faker.phone.phoneNumber("###-###-####");
@@ -68,7 +68,7 @@ numList = numList.join();
 let bookList = [];
 let isbns = [];
 let formats = ["Paperback", "Hardcover"];
-for(let i=0; i<50; i++) {
+for(let i=0; i<500; i++) {
     let newIsbn = randIsbn();
     while(isbns.includes(newIsbn)) {
         newIsbn = randIsbn();
@@ -78,7 +78,7 @@ for(let i=0; i<50; i++) {
     bookList.push(
         "('" + newIsbn + "','" +
         checkQuotes(faker.random.words()) + "','" +
-        faker.image.abstract() + "','" +
+        faker.image.image(250, 350, true) + "','" +
         pubNames[Math.floor(Math.random() * pubNames.length)] + "','" +
         checkQuotes(faker.lorem.paragraphs(2, "<br/>")) + "'," +
         faker.commerce.price(5, 150, 2) + "," +
@@ -156,7 +156,7 @@ authorList = authorList.join();
 //Account table
 let userList = [];
 let userEmails = [];
-for(let i=0; i<5; i++) {
+for(let i=0; i<75; i++) {
     const fName = checkQuotes(faker.name.firstName());
     const lName = checkQuotes(faker.name.lastName());
     let newEmail = faker.internet.email(fName, lName);
@@ -280,7 +280,7 @@ orderList = orderList.join();
 saleList = saleList.join();
 
 
-
+//conect to db
 const { Client } = require("pg");
 let db = new Client({
     host: "localhost",
@@ -297,6 +297,8 @@ db
   })
   .catch(err => console.error("Cannot connect to the database", err.stack))
   
+
+//delete all current rows
 function clearData() {
     const delQuery = "TRUNCATE TABLE Publisher, Contact, Book, Account RESTART IDENTITY CASCADE;";
     db
@@ -305,6 +307,8 @@ function clearData() {
       .catch(err => console.error(err.stack))
 }
 
+
+//add fake data
 function addData() {
     const addQuery = 
         "INSERT INTO Publisher VALUES" + publisherList + ";" +
@@ -322,24 +326,7 @@ function addData() {
 
     db
       .query(addQuery)
-      .then(res => {
-          console.log("Database populated successfully");
-          db.end();
-          //check();
-      })
-      .catch(err => {
-          console.error(err.stack);
-          db.end();
-      })
-}
-
-function check() {
-    const checkQuery = "SELECT Card_id FROM Card";
-    db
-      .query(checkQuery)
-      .then(res => {
-          console.log(res.rows);
-      })
+      .then(() => console.log("Database populated successfully"))
       .catch(err => console.error(err.stack))
-      .then(() => db.end())
+      .finally(() => db.end())
 }
