@@ -1,6 +1,6 @@
 const express = require("express");
 let router = express.Router();
-const db = require('../db');
+const db = require("../db/book-queries");
 
 //list of books
 router.get("/", getBooks, sendBooks);
@@ -8,12 +8,10 @@ router.get("/", getBooks, sendBooks);
 //query params
 
 function getBooks(req, res, next) {
-    const query = "SELECT Book.ISBN, Book.Title, Book.Cover, ARRAY_AGG(Authored.Author) Authors FROM Book JOIN Genre ON Book.ISBN = Genre.Book JOIN Authored ON Book.ISBN = Authored.Book WHERE Genre.Name = 'Fantasy' GROUP BY Book.ISBN, Book.Title, Book.Cover LIMIT $1"; //test
-    const vals = [5];
-    
-    db.query(query, vals, (err, result) => {
+    req.query = [5]; //test
+    db.getBooks(req.query, (err, result) => {
         if(err) console.error(err.stack);
-        res.books = result.rows;
+        res.books = result;
         next();
     });
 }
