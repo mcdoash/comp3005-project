@@ -3,3 +3,11 @@ mixin script(file)
     
 mixin css(file)
     link(rel="stylesheet" href="/stylesheets/" + file + ".css")
+
+mixin authorLinks(authors)
+    - let authorLinks = [];
+    each author in authors
+        - authorLinks.push('<a href="/books?author=' + author + '">' + author + '</a>');
+    - authorLinks = authorLinks.join(", ");
+
+    != authorLinks

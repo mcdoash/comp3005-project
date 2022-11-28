@@ -5,25 +5,29 @@ block content
         #cover
         #info
             h1 #{book.title}
-            //-links
-            - let authors = book.authors.join(", ")
-            span#authors #{authors} 
 
-            p#description #{book.description}
+             - let authors = [];
+            each author in book.authors
+                - authors.push('<a href="/books?author=' + author + '">' + author + '</a>');
+            - authors = authors.join(", ");
+            span#authors
+                != authors
+
+            //!!br broken
+            p#description #{book.blurb}
 
             #genres
                 each genre in book.genres
                     button
-                        a(href="") #{genre} 
+                        a(href="/books?genre=" + genre) #{genre} 
 
             #book-data
-                p <b>Release Date:</b> #{book.release}
-                p <b>Format:</b> #{book.format}
-                p <b>Page count:</b> #{book.pages}
+                p <b>Release Date:</b> #{book.release_date}
+                p <b>Format:</b> #{book.book_format}
+                p <b>Page count:</b> #{book.page_num}
                 p <b>Publisher:</b> #{book.publisher}
 
-            //- format price - book.stock = 0
-            if book.stock > 0 
+            if book.instock
                 button#buy $#{book.price} - Add to Cart
             else   
                 button#buy(disabled) Out of Stock

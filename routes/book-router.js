@@ -4,10 +4,11 @@ const db = require("../db/book-queries");
 
 //list of books
 router.get("/", parseQueries, getBooks, sendBooks);
+router.get("/:isbn", sendOneBook);
 
 function parseQueries(req, res, next) {
     if(Object.keys(req.query).length
-    ) res.params = true; //search params
+    ) res.params = true; //search params !!!!!broken
 
     //check valid page number
     if(!req.query.page || req.query.page < 1)  {
@@ -45,9 +46,17 @@ function sendBooks(req, res) {
 }
 
 
-//individual book - old
-router.get("/:isbn", (req, res) => {
-    res.status(200).render("book", {book: books[0]});
+//individual book
+router.param("isbn" , (req, res, next, isbn) => {
+    db.getSpecific(isbn, (err, result) => {
+        if(err) console.error(err.stack);
+        res.book = result;
+        next();
+    });
 });
+
+function sendOneBook(req, res) {
+    res.status(200).render("book", {book: res.book});
+}
 
 module.exports = router;
