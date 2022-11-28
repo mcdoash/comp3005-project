@@ -6,6 +6,9 @@ const db = require("../db/book-queries");
 router.get("/", parseQueries, getBooks, sendBooks);
 
 function parseQueries(req, res, next) {
+    if(Object.keys(req.query).length
+    ) res.params = true; //search params
+
     //check valid page number
     if(!req.query.page || req.query.page < 1)  {
             req.query.page = 1;
@@ -13,16 +16,25 @@ function parseQueries(req, res, next) {
     try {
         req.query.page = Number(req.query.page);
     } catch { req.query.page = 1 };
-
+    
     next();
 }
 
 function getBooks(req, res, next) {
-    db.getBooks(req.query, (err, result) => {
-        if(err) console.error(err.stack);
-        res.books = result;
-        next();
-    });
+    if(!res.params) { //no search params
+        db.getPopular((err, result) => {z
+            if(err) console.error(err.stack);
+            res.books = result;
+            next();
+        });
+    }
+    else { //get books according to search params
+        db.getBooks(req.query, (err, result) => {
+            if(err) console.error(err.stack);
+            res.books = result;
+            next();
+        });
+    }
 }
 
 function sendBooks(req, res) {
