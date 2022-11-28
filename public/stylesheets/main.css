@@ -78,6 +78,20 @@ aside {
   background-color: #bbbbbb;
 }
 
+section#login {
+  margin: 2%;
+  padding: 2%;
+  background-color: #f2f2f2;
+}
+
+section#login #email, section#login #buttons {
+  margin-top: 5%;
+}
+
+section#login button {
+  margin-right: 2%;
+}
+
 section#book-list {
   display: -ms-flexbox;
   display: -webkit-box;

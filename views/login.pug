@@ -1,0 +1,19 @@
+extends layout
+
+//block scripts
+    +script("login")
+
+block content
+    section#login
+        h2 Register or Log In
+        
+        form(id="login" name="login") 
+            #email
+                label(for="email") Email:
+                input(type="email" name="email" placeholder="email")
+            #password
+                label(for="password") Password:
+                input(type="password" name="password" placeholder="password")
+            #buttons
+                button#login Log In
+                button#register(type="button" formaction="/accounts") Register

@@ -168,7 +168,8 @@ for(let i=0; i<75; i++) {
     userList.push(
         "('" + newEmail + "','" +
         fName + "','" +
-        lName + "')"
+        lName + "','" + 
+        faker.internet.password() + "')"
     );
 }
 userList = userList.join();

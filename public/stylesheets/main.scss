@@ -74,6 +74,18 @@ aside {
     background-color: #bbbbbb;
 }
 
+
+section#login {
+    margin: 2%;
+    padding: 2%;
+    background-color: #f2f2f2;
+
+    #email, #buttons {
+        margin-top: 5%;
+    }
+    button { margin-right: 2%; }
+}
+
 section#book-list {
     @include flex;
     width: 77vw;

@@ -7,14 +7,16 @@ app.set("view engine", "pug");
 app.set("views", "./views");
 
 //database integration handled in another file
-const db = require('./db');
+const db = require("./db");
 
 app.use(express.json());
 app.use(express.static("public"));
 
 //routers
 let bookRouter = require("./routes/book-router");
+let accountRouter = require("./routes/account-router");
 app.use("/books", bookRouter);
+app.use("/accounts", accountRouter);
 
 
 //start server
@@ -30,3 +32,8 @@ app.get("/", showIndex);
 function showIndex(req, res) {
     res.status(200).render("index");
 }
+
+
+app.get("/login", (req, res) => {
+    res.status(200).render("login");
+});
