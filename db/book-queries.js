@@ -49,7 +49,7 @@ function getParams(params) {
         conditions.push("Genre.Name = '" + params.genre + "'");
     }
     if(params.author) {
-        conditions.push("Authored.Author = '" + params.author + "'");
+        conditions.push("Book.ISBN IN (SELECT Book.ISBN FROM Book JOIN Authored ON Book.ISBN = Authored.Book WHERE Authored.Author ='" + params.author + "')");
     }
     if(params.title) {
         conditions.push("Book.Title = '" + params.title + "'");
