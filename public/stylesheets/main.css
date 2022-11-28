@@ -122,6 +122,23 @@ section#book-list .book-data button {
   margin-top: 20px;
 }
 
+section#book-list #pagination {
+  width: 100%;
+  margin: 2%;
+}
+
+section#book-list #pagination button {
+  background-color: #b5b5b5;
+}
+
+section#book-list #pagination button#back {
+  float: left;
+}
+
+section#book-list #pagination button#next {
+  float: right;
+}
+
 /*book info page*/
 section#main-info {
   display: -ms-flexbox;

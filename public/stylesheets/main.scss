@@ -99,6 +99,18 @@ section#book-list {
         h2, span, button { display: block; }
         button { margin-top: 20px; }
     }
+
+    #pagination {
+        width: 100%;
+        margin: 2%;
+
+        button {
+            background-color: #b5b5b5;
+
+            &#back { float: left; }
+            &#next { float: right; }
+        }
+    }
 }
 
 /*book info page*/

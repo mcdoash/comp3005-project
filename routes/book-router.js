@@ -38,7 +38,10 @@ function getBooks(req, res, next) {
 }
 
 function sendBooks(req, res) {
-    res.status(200).render("book-results", {books: res.books});
+    res.status(200).render("book-results", {
+        books: res.books,
+        page: req.query.page
+    });
 }
 
 

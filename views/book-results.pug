@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+    +script("browse")
+
 block content
     aside#search-options
 
@@ -21,3 +24,10 @@ block content
                         != authors
 
                     button#buy $#{book.price} - Add to Cart
+
+        
+        #pagination
+            if page > 1
+                button#back(onclick="changePage(" + (page - 1) + ")") Back
+            if books.length == 20 
+                button#next(onclick="changePage(" + (page + 1) + ")") Next
