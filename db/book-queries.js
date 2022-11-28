@@ -17,17 +17,11 @@ exports.getPopular = (callback) => {
 
 //get books based on query params
 exports.getBooks = (params, callback) => {
-    //test http://localhost:3000/books?genre=Fantasy&format=Hardcover
-    console.log("params:");
-    console.log(params);
-
     let conditions = getParams(params);
     let offset = (params.page - 1) * booksPerPage;
 
     let query = "SELECT Book.ISBN, Book.Title, Book.Cover, ARRAY_AGG(DISTINCT Authored.Author) Authors, Book.Price  FROM Book JOIN Authored ON Book.ISBN = Authored.Book " + conditions + " GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Price LIMIT " + booksPerPage + " OFFSET " + offset; 
 
-    console.log(query);
-    
     db.query(query, [], (err, result) => {
         callback(err, result.rows);
     });
@@ -35,7 +29,7 @@ exports.getBooks = (params, callback) => {
 
 //format query conditions
 function getParams(params) {
-    if(params) {
+    if(params.length > 1) { //other than page
         let join = "";
         let conditions = [];
 
