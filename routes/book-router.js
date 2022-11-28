@@ -8,7 +8,7 @@ router.get("/:isbn", sendOneBook);
 
 function parseQueries(req, res, next) {
     if(Object.keys(req.query).length
-    ) res.params = true; //search params !!!!!broken
+    ) res.params = true; //search params
 
     //check valid page number
     if(!req.query.page || req.query.page < 1)  {
@@ -23,7 +23,7 @@ function parseQueries(req, res, next) {
 
 function getBooks(req, res, next) {
     if(!res.params) { //no search params
-        db.getPopular((err, result) => {z
+        db.getPopular((err, result) => {
             if(err) console.error(err.stack);
             res.books = result;
             next();

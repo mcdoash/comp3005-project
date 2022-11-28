@@ -39,27 +39,24 @@ exports.getBooks = (params, callback) => {
 
 //format query conditions
 function getParams(params) {
-    if(params.length > 1) { //other than page
-        let join = "";
-        let conditions = [];
+    let join = ""; //if genre join table
+    let conditions = [];
 
-        //isbn -> go to specific book
-        //regex for similar results
-        if(params.genre) {
-            join = "JOIN Genre ON Book.ISBN = Genre.Book ";
-            conditions.push("Genre.Name = '" + params.genre + "'");
-        }
-        if(params.author) {
-            conditions.push("Authored.Author = '" + params.author + "'");
-        }
-        if(params.title) {
-            conditions.push("Book.Title = '" + params.title + "'");
-        }
-        if(params.format) {
-            conditions.push("Book.Book_format = '" + params.format + "'");
-        }
-
-        return join + "WHERE " + conditions.join(" AND ");
+    //isbn -> go to specific book
+    //regex for similar results
+    if(params.genre) {
+        join = "JOIN Genre ON Book.ISBN = Genre.Book ";
+        conditions.push("Genre.Name = '" + params.genre + "'");
     }
-    else return "";
+    if(params.author) {
+        conditions.push("Authored.Author = '" + params.author + "'");
+    }
+    if(params.title) {
+        conditions.push("Book.Title = '" + params.title + "'");
+    }
+    if(params.format) {
+        conditions.push("Book.Book_format = '" + params.format + "'");
+    }
+
+    return join + "WHERE " + conditions.join(" AND ");
 }
