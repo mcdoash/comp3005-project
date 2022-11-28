@@ -1,6 +1,8 @@
 extends layout
 
 block content
+    aside#search-options
+
     section#book-list
         each book in books
             .result
@@ -9,5 +11,13 @@ block content
                 .book-data
                     h2
                         a(href="/books/" + book.isbn) #{book.title}
-                    - let authors = book.authors.join(", ");
-                    span.authors #{authors}
+
+                    - let authors = [];
+                    each author in book.authors
+                        - authors.push('<a href="/books?author=' + author + '">' + author + '</a>');
+                    - authors = authors.join(", ");
+
+                    span.authors
+                        != authors
+
+                    button#buy $#{book.price} - Add to Cart

@@ -63,13 +63,63 @@ button:disabled {
   background-color: #ffffff;
 }
 
-section#book-list .cover {
+#content {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  overflow: hidden;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+aside {
   width: 20vw;
+  min-height: 100vh;
+  background-color: #bbbbbb;
+}
+
+section#book-list {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  overflow: hidden;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 77vw;
+  margin-left: 3vw;
+}
+
+section#book-list .result {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  overflow: hidden;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 45%;
+  margin: 2%;
+}
+
+section#book-list .cover {
+  width: 25%;
   display: inline-block;
 }
 
 section#book-list .cover img {
   width: 100%;
+}
+
+section#book-list .book-data {
+  width: 70%;
+  padding: 0 3%;
+}
+
+section#book-list .book-data h2, section#book-list .book-data span, section#book-list .book-data button {
+  display: block;
+}
+
+section#book-list .book-data button {
+  margin-top: 20px;
 }
 
 /*book info page*/

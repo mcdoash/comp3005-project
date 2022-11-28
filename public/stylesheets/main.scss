@@ -62,14 +62,42 @@ button {
     }
 }
 
+
+
+#content {
+    @include flex;
+}
+
+aside {
+    width: 20vw;
+    min-height: 100vh;
+    background-color: #bbbbbb;
+}
+
 section#book-list {
+    @include flex;
+    width: 77vw;
+    margin-left: 3vw;
+
+    .result {
+        @include flex;
+        width: 45%;
+        margin: 2%;
+    }
     .cover {
-        width: 20vw;
+        width: 25%;
         display: inline-block;
 
         img {
             width: 100%;
         }
+    }
+    .book-data {
+        width: 70%;
+        padding: 0 3%;
+
+        h2, span, button { display: block; }
+        button { margin-top: 20px; }
     }
 }
 
