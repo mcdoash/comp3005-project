@@ -2,6 +2,7 @@ extends layout
 
 block scripts
     +script("browse")
+    +script("cart")
 
 block content
     aside#search-options
@@ -23,7 +24,7 @@ block content
                     span.authors
                         != authors
 
-                    button#buy $#{book.price} - Add to Cart
+                    +buyBtn(book)
 
         
         #pagination

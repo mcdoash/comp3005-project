@@ -198,9 +198,35 @@ section#main-info #info #book-data p {
   font-size: 1.25rem;
 }
 
-section#main-info #info #buy {
+section#main-info #info .buy {
   position: absolute;
   top: 5vw;
   right: 4vw;
+}
+
+section#cart {
+  width: 80%;
+  margin: 2%;
+  padding: 4%;
+  display: block;
+  background-color: #cecece;
+}
+
+section#cart button#checkout {
+  margin-top: 20px;
+}
+
+section#cart .cart-item {
+  margin: 2%;
+  padding: 2%;
+  background-color: #f2f2f2;
+}
+
+section#cart .cart-item h3, section#cart .cart-item span {
+  display: inline-block;
+}
+
+section#cart .cart-item span {
+  float: right;
 }
 /*# sourceMappingURL=main.css.map */

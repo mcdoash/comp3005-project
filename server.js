@@ -27,8 +27,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //routers
 let bookRouter = require("./routes/book-router");
 let accountRouter = require("./routes/account-router");
+let cartRouter = require("./routes/cart-router");
 app.use("/books", bookRouter);
 app.use("/accounts", accountRouter);
+app.use("/cart", cartRouter);
 
 
 //start server

@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+    +script("cart")
+
 block content
     section#main-info
         #cover
@@ -28,6 +31,6 @@ block content
                 p <b>Publisher:</b> #{book.publisher}
 
             if book.instock
-                button#buy $#{book.price} - Add to Cart
+                +buyBtn(book)
             else   
-                button#buy(disabled) Out of Stock
+                button.buy(disabled) Out of Stock

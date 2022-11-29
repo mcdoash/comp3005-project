@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    section#cart
+        if !session.cart
+            p Nothing in cart.
+        else
+            each item in session.cart
+                .cart-item
+                    h3  
+                        a(href="/books/" + item.isbn) #{item.title}
+                    span $#{item.price.toFixed(2)} - #{item.quantity}
+
+            //total
+
+            //checkout
+            if !session.signedIn
+                button#checkout(onclick="window.location.href='/login';") Log In/Register to Checkout
+            else
+                button#checkout Checkout

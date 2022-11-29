@@ -157,10 +157,31 @@ section#main-info {
             margin: 0.25rem 0;
             font-size: 1.25rem;
         }
-        #buy {
+        .buy {
             position: absolute;
             top: 5vw;
             right: 4vw;
         }
+    }
+}
+
+section#cart {
+    width: 80%;
+    margin: 2%;
+    padding: 4%;
+    display: block;
+    background-color: #cecece;
+
+    button#checkout {
+        margin-top: 20px;
+    }
+
+    .cart-item  {
+        margin: 2%;
+        padding: 2%;
+        background-color: #f2f2f2;
+        
+        h3, span { display: inline-block; }
+        span {float: right;}
     }
 }
