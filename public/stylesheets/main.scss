@@ -184,4 +184,9 @@ section#cart {
         h3, span { display: inline-block; }
         span {float: right;}
     }
+
+    #total {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
 }

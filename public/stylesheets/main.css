@@ -229,4 +229,9 @@ section#cart .cart-item h3, section#cart .cart-item span {
 section#cart .cart-item span {
   float: right;
 }
+
+section#cart #total {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 /*# sourceMappingURL=main.css.map */

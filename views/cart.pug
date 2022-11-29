@@ -2,16 +2,18 @@ extends layout
 
 block content
     section#cart
+        h2 Cart
+
         if !session.cart
             p Nothing in cart.
         else
-            each item in session.cart
+            each item in session.cart.books
                 .cart-item
                     h3  
                         a(href="/books/" + item.isbn) #{item.title}
-                    span $#{item.price.toFixed(2)} - #{item.quantity}
+                    span $#{item.price.toFixed(2)} - #{item.quantity}x
 
-            //total
+            #total Total - $#{session.cart.total.price.toFixed(2)}
 
             //checkout
             if !session.signedIn
