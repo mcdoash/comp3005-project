@@ -322,7 +322,8 @@ function addData() {
         "INSERT INTO Address VALUES" + addressList + ";" +
         "INSERT INTO Card VALUES" + cardList + ";" +
         "INSERT INTO Book_order VALUES" + orderList + ";" +
-        "INSERT INTO Sale VALUES" + saleList + ";";
+        "INSERT INTO Sale VALUES" + saleList + ";" + 
+        "REFRESH MATERIALIZED VIEW Top_book_data;";
     //console.log(addQuery);
 
     db
