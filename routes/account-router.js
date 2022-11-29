@@ -2,9 +2,6 @@ const express = require("express");
 let router = express.Router();
 const db = require("../db/account-queries");
 
-const bodyParser = require("body-parser");
-router.use(bodyParser.urlencoded({ extended: true }))
-
 //create new user
 router.post("/", checkAccount, newAccount);
 

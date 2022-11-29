@@ -3,7 +3,7 @@ extends layout
 
 block content
     section#login
-        form(id="login" name="login") 
+        form(id="login" name="login" action="/login" method="post") 
             h2 Log In
             #email
                 label(for="email") Email:
