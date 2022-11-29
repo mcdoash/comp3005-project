@@ -42,7 +42,9 @@ app.get("/", showIndex);
 //get data
 
 function showIndex(req, res) {
-    res.status(200).render("index");
+    res.status(200).render("index", {
+        session: req.session
+    });
 }
 
 //log in page
@@ -57,10 +59,24 @@ app.post("/login", (req, res) => {
         if(success) {
             req.session.signedIn = true;
             req.session.user = req.body.email;
-            res.sendStatus(200);
+            res.statusCode = 200;
+            res.redirect("/");
+            return;
         }
         else {
             res.status(401).send({error: "Invalid email or password."});
         }
     });
+});
+
+app.get("/logout", (req, res) => {
+    if(req.session.signedIn) {
+        req.session.destroy();
+        res.statusCode = 200;
+        res.redirect("/");
+        return;
+    }
+    else { //not signed in
+        res.sendStatus(401);//fix to page
+    }
 });
