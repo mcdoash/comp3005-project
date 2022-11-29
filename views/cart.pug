@@ -5,7 +5,7 @@ block content
         if !session.cart
             p Nothing in cart.
         else
-            each item in session.cart
+            each item in session.cart.data
                 .cart-item
                     h3  
                         a(href="/books/" + item.isbn) #{item.title}

@@ -12,13 +12,25 @@ router.get("/", (req, res) => {
 
 //add book to cart
 router.post("/", (req, res) => {
-    if (!req.session.cart) {
-        req.session.cart = []
+    if (!req.session.cart) { //empty cart init
+        req.session.cart = {};
+        req.session.cart.data = [];
+        req.session.cart.books = [];
     }
-    req.body.quantity = 1; //check/set
+    if(req.session.cart.books.includes(req.body.isbn)) { //book already in cart
+        req.session.cart.data.forEach((book) => {
+            if(book.isbn == req.body.isbn) {
+                book.quantity++;
+            }
+        })
+    }
+    else {
+        req.session.cart.books.push(req.body.isbn);
+        req.body.quantity = 1;
+        req.session.cart.data.push(req.body);
+    } 
     
-    req.session.cart.push(req.body);
-    console.log(req.session.cart);
+    console.log(req.session.cart.data);
     res.status(204).send({});
 });
 
