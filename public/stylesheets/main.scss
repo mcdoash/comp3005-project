@@ -47,7 +47,7 @@ a {
 }
 
 
-button {
+button, input {
     cursor: pointer;
     padding: 5px 10px;
     font-size: 1rem;
@@ -74,16 +74,18 @@ aside {
     background-color: #bbbbbb;
 }
 
-
-section#login {
+form {
     margin: 2%;
-    padding: 2%;
+    padding: 4%;
     background-color: #f2f2f2;
 
     #email, #buttons {
         margin-top: 5%;
     }
-    button { margin-right: 2%; }
+}
+
+section#login, section#register {
+    width: 30%;
 }
 
 section#book-list {

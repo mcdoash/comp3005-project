@@ -1,19 +1,33 @@
 extends layout
 
-//block scripts
-    +script("login")
 
 block content
     section#login
-        h2 Register or Log In
-        
         form(id="login" name="login") 
+            h2 Log In
             #email
                 label(for="email") Email:
-                input(type="email" name="email" placeholder="email")
+                input(type="email" name="email" placeholder="email" required maxlength="30")
             #password
                 label(for="password") Password:
-                input(type="password" name="password" placeholder="password")
+                input(type="password" name="password" placeholder="password" required maxlength="30")
             #buttons
                 button#login Log In
-                button#register(type="button" formaction="/accounts") Register
+
+    section#register
+        form(id="register" name="register" action="/accounts" method="post") 
+            h2 Register
+            #email
+                label(for="email") Email:
+                input(type="email" name="email" placeholder="email" required maxlength="30")
+            #password
+                label(for="password") Password:
+                input(type="password" name="password" placeholder="password" required maxlength="30")
+            #fname
+                label(for="fname") First name:
+                input(type="text" name="fname" placeholder="First Name" required maxlength="15")
+            #lname
+                label(for="lname") Last name:
+                input(type="text" name="lname" placeholder="Last name" required maxlength="20")
+            #buttons
+                input(type="submit" value="Register") 

@@ -44,7 +44,7 @@ a:hover {
   text-decoration: underline;
 }
 
-button {
+button, input {
   cursor: pointer;
   padding: 5px 10px;
   font-size: 1rem;
@@ -54,11 +54,11 @@ button {
   transition: background-color 0.5s ease;
 }
 
-button:hover {
+button:hover, input:hover {
   background-color: #e8e8e8;
 }
 
-button:disabled {
+button:disabled, input:disabled {
   cursor: initial;
   background-color: #ffffff;
 }
@@ -78,18 +78,18 @@ aside {
   background-color: #bbbbbb;
 }
 
-section#login {
+form {
   margin: 2%;
-  padding: 2%;
+  padding: 4%;
   background-color: #f2f2f2;
 }
 
-section#login #email, section#login #buttons {
+form #email, form #buttons {
   margin-top: 5%;
 }
 
-section#login button {
-  margin-right: 2%;
+section#login, section#register {
+  width: 30%;
 }
 
 section#book-list {
