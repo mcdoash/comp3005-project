@@ -234,4 +234,20 @@ section#cart #total {
   font-size: 1.2rem;
   font-weight: bold;
 }
+
+section#checkout {
+  width: 80%;
+}
+
+section#checkout form {
+  width: 50%;
+}
+
+section#checkout #address .address-opt {
+  display: block;
+}
+
+section#checkout #address .address-opt label {
+  margin-left: 2%;
+}
 /*# sourceMappingURL=main.css.map */

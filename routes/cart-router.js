@@ -1,6 +1,8 @@
 const express = require("express");
 let router = express.Router();
-//const db = require("../db/order-queries");
+const db = require("../db/order-queries");
+
+router.get("/checkout", checkLoggedIn, getAccountData, showCheckout);
 
 //show cart page
 router.get("/", (req, res) => {
@@ -38,5 +40,29 @@ router.post("/", (req, res) => {
     req.session.cart.total.quantity ++;
     res.status(204).send();
 });
+
+
+function checkLoggedIn(req, res, next) {
+    if(req.session.signedIn) next();
+    else return;
+}
+
+//check account data
+function getAccountData(req, res, next) {
+    console.log(req.session.user);
+    db.getAccountData(req.session.user.email, (err, results) => {
+        if(err) console.error(err.stack);
+        console.log(results);
+        req.session.user.cards = results.cards;
+        req.session.user.addresses = results.addresses;
+        next();
+    });
+}
+
+function showCheckout(req, res) {
+    res.status(200).render("checkout", {
+        session: req.session
+    });
+}
 
 module.exports = router;

@@ -39,9 +39,50 @@ console.log("Server running on port 3000");
 
 
 
-app.get("/", showIndex);
+app.get("/", testLogIn);//, showIndex);
 
 //get data
+
+function testLogIn(req, res, next) {
+    account.logIn("Mekhi51@gmail.com", "5W71FtXg0WNAbcl", (err, success) => {
+        if(err) console.error(err.stack);
+        if(success) {
+            req.session.signedIn = true;
+            req.session.user = { email: "Mekhi51@gmail.com" };
+            req.session.cart = {
+                books: [
+                  {
+                    isbn: '9117232372',
+                    title: 'input benchmark Wooden',
+                    price: 133,
+                    quantity: 2
+                  },
+                  {
+                    isbn: '7619454760',
+                    title: 'Generic Horizontal Avon',
+                    price: 10,
+                    quantity: 1
+                  },
+                  {
+                    isbn: '6752476965',
+                    title: 'black program',
+                    price: 66,
+                    quantity: 1
+                  },
+                  { isbn: '7584365768', title: 'SDD', price: 111, quantity: 1 }
+                ],
+                total: { price: 453, quantity: 5 }
+              }
+
+            res.statusCode = 200;
+            res.redirect("/cart");
+            return;
+        }
+        else {
+            res.status(401).send({error: "Invalid email or password."});
+        }
+    });
+}
 
 function showIndex(req, res) {
     res.status(200).render("index", {
@@ -60,7 +101,7 @@ app.post("/login", (req, res) => {
         if(err) console.error(err.stack);
         if(success) {
             req.session.signedIn = true;
-            req.session.user = req.body.email;
+            req.session.user = { email: req.body.email };
             res.statusCode = 200;
             res.redirect("/");
             return;

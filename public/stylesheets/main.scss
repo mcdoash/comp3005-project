@@ -190,3 +190,14 @@ section#cart {
         font-weight: bold;
     }
 }
+
+section#checkout {
+    width: 80%;
+    form {
+        width: 50%;
+    }
+    #address .address-opt {
+        display: block;
+        label { margin-left: 2%; }
+    }
+}
