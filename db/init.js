@@ -216,8 +216,8 @@ userEmails.forEach((user) => {
                 user + "','" +
                 newCard + "','" +
                 checkQuotes(faker.name.findName()) + "','" +
-                faker.date.between("2023-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z").toISOString() + "'," +
-                parseInt(faker.finance.creditCardCVV()) + "," + 
+                faker.date.between("2023-01-01T00:00:00.000Z", "2027-01-01T00:00:00.000Z").toISOString() + "','" +
+                parseInt(faker.finance.creditCardCVV()) + "'," + 
                 addressList.length + ")" 
             );
 
