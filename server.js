@@ -27,10 +27,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 //routers
 let bookRouter = require("./routes/book-router");
 let accountRouter = require("./routes/account-router");
-let cartRouter = require("./routes/cart-router");
+let checkoutRouter = require("./routes/checkout-router");
 app.use("/books", bookRouter);
 app.use("/accounts", accountRouter);
-app.use("/cart", cartRouter);
+app.use("/checkout", checkoutRouter);
 
 
 //start server
@@ -122,4 +122,44 @@ app.get("/logout", (req, res) => {
     else { //not signed in
         res.sendStatus(401);//fix to page
     }
+});
+
+
+
+
+//show cart page
+app.get("/cart", (req, res) => {
+    res.status(200).render("cart", {
+        session: req.session
+    });
+});
+
+
+//add book to cart
+app.post("/cart", (req, res) => {
+    if (!req.session.cart) { //empty cart init
+        req.session.cart = {};
+        req.session.cart.books = [];
+        req.session.cart.total = {
+            price: 0,
+            quantity: 0
+        }
+    }
+    let inCart = false;
+
+    //check if book already in cart
+    req.session.cart.books.forEach((book) => {
+        if(book.isbn == req.body.isbn) {
+            book.quantity++;
+            inCart = true;
+        }
+    })
+    if(!inCart) {
+        req.body.quantity = 1;
+        req.session.cart.books.push(req.body);
+    } 
+
+    req.session.cart.total.price += req.body.price;
+    req.session.cart.total.quantity ++;
+    res.status(204).send();
 });

@@ -88,6 +88,15 @@ form #email, form #buttons {
   margin-top: 5%;
 }
 
+form .form-sect {
+  display: block;
+  margin-bottom: 10px;
+}
+
+form label {
+  margin-right: 5px;
+}
+
 section#login, section#register {
   width: 30%;
 }
@@ -235,19 +244,19 @@ section#cart #total {
   font-weight: bold;
 }
 
-section#checkout {
+section.checkout {
   width: 80%;
 }
 
-section#checkout form {
+section.checkout form {
   width: 50%;
 }
 
-section#checkout #address .address-opt {
-  display: block;
+section.checkout label {
+  margin-left: 2%;
 }
 
-section#checkout #address .address-opt label {
-  margin-left: 2%;
+section.checkout button {
+  margin-top: 5%;
 }
 /*# sourceMappingURL=main.css.map */

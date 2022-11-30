@@ -82,6 +82,11 @@ form {
     #email, #buttons {
         margin-top: 5%;
     }
+    .form-sect { 
+        display: block;
+        margin-bottom: 10px; 
+    }
+    label { margin-right: 5px; }
 }
 
 section#login, section#register {
@@ -191,13 +196,9 @@ section#cart {
     }
 }
 
-section#checkout {
+section.checkout {
     width: 80%;
-    form {
-        width: 50%;
-    }
-    #address .address-opt {
-        display: block;
-        label { margin-left: 2%; }
-    }
+    form { width: 50%; }
+    label { margin-left: 2%; }
+    button { margin-top: 5%; }
 }

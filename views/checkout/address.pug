@@ -1,0 +1,48 @@
+extends ../layout
+
+block scripts
+    +script("cart")
+
+block content
+    section.checkout
+        form(name="address-form")
+            h3 Choose Address
+            if session.user.addresses
+                each address in session.user.addresses
+                    .form-sect
+                        input(type="radio" id="'" + address.id + "'" value="'" + address.id + "'" name="address") 
+                        label(for="'" + address.id + "'") #{address.fname} #{address.lname} - #{address.street}
+            .form-sect
+                input(type="radio" id="new" value="new" name="address" required) 
+                label(for="new") New Address
+
+            button#set-address(type="button") Next
+
+        form#set-new-add(name="new-address-form")
+            h3 New Address
+            .form-sect
+                label(for="fname") First name:
+                input(type="text" name="fname" placeholder="First Name" required maxlength="15")
+            .form-sect
+                label(for="lname") Last name:
+                input(type="text" name="lname" placeholder="Last name" required maxlength="20")
+            .form-sect
+                label(for="street") Street:
+                input(type="text" name="street" placeholder="Street name" required maxlength="30")
+            .form-sect
+                label(for="city") City:
+                input(type="text" name="city" placeholder="City name" required maxlength="25")
+            .form-sect
+                label(for="province") Province Code:
+                input(type="text" name="province" placeholder="Prov code" required maxlength="2")
+            .form-sect
+                label(for="postal_code") Postal/Zip Code:
+                input(type="text" name="postal_code" placeholder="Postal code" required maxlength="10")
+            .form-sect
+                label(for="country") Country:
+                input(type="text" name="country" placeholder="Country" required maxlength="20")
+            .form-sect
+                label(for="phone_num") Phone number:
+                input(type="phone" name="phone_num" placeholder="123-456-7890" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}")
+
+            button#new-address(type="button") Next

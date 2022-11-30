@@ -4,7 +4,9 @@ const accountExists = "SELECT COUNT(*) as exists FROM Account WHERE Email = $1";
 
 const createAccount = "INSERT INTO Account VALUES($1, $2, $3, $4)";
 
-const logIn = "SELECT COUNT(*) as success FROM Account WHERE Email = $1 AND Password = $2"
+const logIn = "SELECT COUNT(*) as success FROM Account WHERE Email = $1 AND Password = $2";
+
+const newAddress = "INSERT INTO Address VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9)";
 
 //return t/f if account with given email exists
 exports.checkAccount = (email, callback) => {
@@ -20,9 +22,16 @@ exports.newAccount = (data, callback) => {
     });
 }
 
+//return if account with email and password exists
 exports.logIn = (email, password, callback) => {
     db.query(logIn, [email, password], (err, result) => {
-        console.log(result);
         callback(err, parseInt(result.rows[0].success));
+    });
+}
+
+//create address
+exports.newAddress = (data, callback) => {
+    db.query(newAddress, data, (err, result) => {
+        callback(err);
     });
 }
