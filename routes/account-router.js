@@ -32,6 +32,7 @@ function newAccount(req, res) {
 }
 
 
+//add a new address
 router.post("/address", checkSignedIn, newAddress);
 
 function checkSignedIn(req, res, next) {
@@ -47,15 +48,14 @@ function newAddress(req, res) {
         account: req.session.user.email,
         ...req.body
     }
-    console.log(Object.values(data));
 
-    db.newAddress(Object.values(data), (err) => {
+    db.newAddress(Object.values(data), (err, id) => {
         if(err) {
             console.error(err.stack);
-            res.status(400).send();
+            res.sendStatus(400);
             return;
         } 
-        res.sendStatus(204);
+        res.status(201).send({id: id});
     });
 }
 

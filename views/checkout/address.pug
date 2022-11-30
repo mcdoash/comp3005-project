@@ -10,13 +10,13 @@ block content
             if session.user.addresses
                 each address in session.user.addresses
                     .form-sect
-                        input(type="radio" id="'" + address.id + "'" value="'" + address.id + "'" name="address") 
+                        input(type="radio" id="" + address.id + "" value="" + address.id + "" name="address") 
                         label(for="'" + address.id + "'") #{address.fname} #{address.lname} - #{address.street}
-            .form-sect
-                input(type="radio" id="new" value="new" name="address" required) 
-                label(for="new") New Address
 
-            button#set-address(type="button") Next
+                button#set-address(type="button") Next
+            else
+                p No current addresses. Please add one below.
+
 
         form#set-new-add(name="new-address-form")
             h3 New Address
