@@ -1,12 +1,12 @@
 extends ../layout
 
 block scripts
-    +script("cart")
+    +script("address")
 
 block content
     section.checkout
         form(name="address-form")
-            h3 Choose Address
+            h2 Choose Address
             if session.user.addresses
                 each address in session.user.addresses
                     .form-sect
@@ -19,7 +19,7 @@ block content
 
 
         form#set-new-add(name="new-address-form")
-            h3 New Address
+            h2 New Address
             .form-sect
                 label(for="fname") First name:
                 input(type="text" name="fname" placeholder="First Name" required maxlength="15")
@@ -34,7 +34,7 @@ block content
                 input(type="text" name="city" placeholder="City name" required maxlength="25")
             .form-sect
                 label(for="province") Province Code:
-                input(type="text" name="province" placeholder="Prov code" required maxlength="2")
+                input(type="text" name="province" placeholder="Prov code" required minlength="2" maxlength="2")
             .form-sect
                 label(for="postal_code") Postal/Zip Code:
                 input(type="text" name="postal_code" placeholder="Postal code" required maxlength="10")

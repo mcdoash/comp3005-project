@@ -259,4 +259,12 @@ section.checkout label {
 section.checkout button {
   margin-top: 5%;
 }
+
+section.checkout button#new-card {
+  margin: 2%;
+}
+
+section.checkout #new-address-sect {
+  display: none;
+}
 /*# sourceMappingURL=main.css.map */

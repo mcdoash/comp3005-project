@@ -200,5 +200,12 @@ section.checkout {
     width: 80%;
     form { width: 50%; }
     label { margin-left: 2%; }
-    button { margin-top: 5%; }
+    button { 
+        margin-top: 5%; 
+
+        &#new-card {
+            margin: 2%;
+        }
+    }
+    #new-address-sect { display: none; }
 }

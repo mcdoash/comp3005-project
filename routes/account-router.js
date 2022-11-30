@@ -32,8 +32,6 @@ function newAccount(req, res) {
 }
 
 
-//add a new address
-router.post("/address", checkSignedIn, newAddress);
 
 function checkSignedIn(req, res, next) {
     if(req.session.signedIn) next();
@@ -42,6 +40,10 @@ function checkSignedIn(req, res, next) {
         return;
     }
 }
+
+
+//add a new address
+router.post("/address", checkSignedIn, newAddress);
 
 function newAddress(req, res) {
     let data = { 
@@ -59,4 +61,23 @@ function newAddress(req, res) {
     });
 }
 
+
+//add a new card
+router.post("/cards", checkSignedIn, newCard);
+
+function newCard(req, res) {
+    let data = { 
+        account: req.session.user.email,
+        ...req.body
+    }
+
+    db.newCard(Object.values(data), (err, id) => {
+        if(err) {
+            console.error(err.stack);
+            res.sendStatus(400);
+            return;
+        } 
+        res.status(201).send({id: id});
+    });
+}
 module.exports = router;
