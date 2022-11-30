@@ -14,13 +14,3 @@ mixin authorLinks(authors)
 
 mixin buyBtn(book)
     button.buy(onclick="addToCart('" + book.isbn + "', '" + book.title + "', " + book.price + ")") $#{book.price} - Add to Cart
-
-//-
-    - let btn = "<button class='buy'> $" + book.price + " - Add to Cart";
-    - btn.addEventListener("click", addToCart(book));
-
-    != btn
-
-    - let btn = document.createElement("button");
-    - btn.className = "buy";
-    - btn.innerHTML = "$" + book.price + " - Add to Cart";
