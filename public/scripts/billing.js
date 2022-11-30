@@ -118,12 +118,12 @@ function setCard(id) {
 	req.onreadystatechange = function() {
         if(this.readyState == 4) {
             if(this.status == 204) {
-                window.location.href = "/checkout/billing";
+                window.location.href = "/checkout/confirm";
             }
             else alert("Error");
 		}
     }
-    req.open("POST", "/checkout/card");
+    req.open("POST", "/checkout/billing");
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify({card: id}));
 }

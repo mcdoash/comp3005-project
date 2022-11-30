@@ -10,8 +10,8 @@ block content
             if session.user.cards
                 each card in session.user.cards
                     .form-sect
-                        input(type="radio" id="" + card.card_id + "" value="" + card.card_id + "" name="card") 
-                        label(for="'" + card.card_id + "'") #{card.name} - #{card.card_num}
+                        input(type="radio" id="'card-" + card.card_id + "'" value="" + card.card_id + "" name="card") 
+                        label(for="'card-" + card.card_id + "'") #{card.name} - #{card.card_num}
 
                 button#set-card(type="button") Next
             else
@@ -23,7 +23,7 @@ block content
             h2 New Card
             .form-sect
                 label(for="card_num") Card number:
-                input(type="text" name="card_num" placeholder="1234567891234567" required minlength="16" maxlength="16")
+                input(type="text" name="card_num" placeholder="1234567891234567" required minlength="16" maxlength="16" pattern="[0-9]{16}")
             .form-sect
                 label(for="name") Name:
                 input(type="text" name="name" placeholder="Name" required maxlength="40")

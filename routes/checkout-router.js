@@ -31,18 +31,31 @@ router.get("/address", (req, res) => {
     });
 });
 
-
 router.post("/address", (req, res) => {
     req.session.cart.address = req.body.address;
-
     res.sendStatus(204);
     return;
 });
+
 
 router.get("/billing", (req, res) => {
     res.status(200).render("checkout/billing", {
         session: req.session
     });
+});
+
+router.post("/billing", (req, res) => {
+    req.session.cart.card = req.body.card;
+    res.sendStatus(204);
+    return;
+});
+
+
+router.get("/confirm", (req, res) => {
+    console.log("ok :)");
+    /*res.status(200).render("checkout/address", {
+        session: req.session
+    });*/
 });
 
 module.exports = router;
