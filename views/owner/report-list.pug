@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+    section#report
+        h3 Report from #{report.from} to #{report.to} by #{report.type}
+
+        table
+            if report.type == "all"
+                tr
+                    th Purchased
+                    th Units sold
+                    th Total revenue
+                    th Total profit
+                    th Total lost
+
+                each row in report.results  
+                    tr
+                        td #{row.purchased}
+                        td #{row.units_sold}
+                        td #{row.total_revenue}
+                        td #{row.total_profit}
+                        td #{row.total_lost}
+            else 
+                tr
+                    if report.type == "genre"
+                        th Genre
+                    else
+                        th Author
+                    th Total sales
+                    th Total revenue
+                    th Total profit
+                    th Profit lost
+                    
+                each row in report.results
+                    tr
+                        if report.type == "genre"
+                            td #{row.genre}
+                        else
+                            td #{row.author}
+                        td #{row.total_sales}
+                        td #{row.total_revenue}
+                        td #{row.total_profit}
+                        td #{row.profit_lost}
+            
+        

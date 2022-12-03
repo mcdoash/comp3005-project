@@ -28,9 +28,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 let bookRouter = require("./routes/book-router");
 let accountRouter = require("./routes/account-router");
 let checkoutRouter = require("./routes/checkout-router");
+let ownerRouter = require("./routes/owner-router");
 app.use("/books", bookRouter);
 app.use("/accounts", accountRouter);
 app.use("/checkout", checkoutRouter);
+app.use("/owner", ownerRouter);
 
 
 //start server
@@ -39,7 +41,7 @@ console.log("Server running on port 3000");
 
 
 
-app.get("/", testLogIn);//, showIndex);
+app.get("/", showIndex);
 
 //get data
 

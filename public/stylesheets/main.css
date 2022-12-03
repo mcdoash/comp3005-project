@@ -267,4 +267,20 @@ section.checkout button#new-card {
 section.checkout #new-address-sect {
   display: none;
 }
+
+section#report table {
+  width: 80%;
+  margin: 2%;
+  border-collapse: collapse;
+}
+
+section#report th, section#report td {
+  padding: 4px 10px;
+  text-align: left;
+  border: 1px solid #dddddd;
+}
+
+section#report th {
+  background-color: #f2f2f2;
+}
 /*# sourceMappingURL=main.css.map */
