@@ -9,7 +9,7 @@ const getTopBooks = {
 } //pagination. refresh
 
 //other queries
-let getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book.Release_date, Book.Stock > 0 AS inStock, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Book JOIN Authored ON Book.ISBN = Authored.Book JOIN Genre ON Book.ISBN = Genre.Book WHERE Book.ISBN = $1 GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book. Release_date, Book.Stock";
+const getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book.Release_date, Book.Stock > 0 AS inStock, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Book JOIN Authored ON Book.ISBN = Authored.Book JOIN Genre ON Book.ISBN = Genre.Book WHERE Book.ISBN = $1 GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book. Release_date, Book.Stock";
 
 
 exports.getPopular = (callback) => {
@@ -19,9 +19,7 @@ exports.getPopular = (callback) => {
 }
 
 exports.getSpecific = (isbn, callback) => {
-    console.log(getSpecficBook);
     db.query(getSpecficBook, [isbn], (err, result) => {
-        console.log(result.rows[0]);
         callback(err, result.rows[0]);
     });
 }
@@ -61,4 +59,16 @@ function getParams(params) {
     }
 
     return join + "WHERE " + conditions.join(" AND ");
+}
+
+
+//return stock of given books
+exports.checkStock = (books, callback) => {
+    books = "'" + books.join("','") + "'";
+    //const query = "SELECT ISBN, Stock > 0 AS inStock FROM Book WHERE ISBN IN (" + books + ");";
+    const query = "SELECT ISBN, Stock FROM Book WHERE ISBN IN (" + books + ");";
+    
+    db.query(query, (err, result) => {
+        callback(err, result.rows);
+    });
 }
