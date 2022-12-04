@@ -18,6 +18,7 @@ app.use(
 //database integration handled in another file
 const account = require("./db/account-queries");
 const publisher = require("./db/publisher-queries");
+const book = require("./db/book-queries");
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -171,10 +172,26 @@ app.post("/cart", (req, res) => {
 //return a list of publishers
 app.get("/publishers", (req, res) => {
     let name = req.query.name;
-    if(!name) { //empty
-
-    }
     publisher.getPubMatch(name, (err, results) => {
+        if(err) console.error(err.stack);
+        res.status(200).send({results: results});
+    });
+});
+
+//return a list of genres
+app.get("/genres", (req, res) => {
+    let name = req.query.name;
+    book.getGenreMatch(name, (err, results) => {
+        if(err) console.error(err.stack);
+        res.status(200).send({results: results});
+    });
+});
+
+
+//return a list of authors
+app.get("/authors", (req, res) => {
+    let name = req.query.name;
+    book.getAuthorMatch(name, (err, results) => {
         if(err) console.error(err.stack);
         res.status(200).send({results: results});
     });

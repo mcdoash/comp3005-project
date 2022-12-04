@@ -72,3 +72,19 @@ exports.checkStock = (books, callback) => {
         callback(err, result.rows);
     });
 }
+
+
+exports.getAuthorMatch = (name, callback) => {
+    const authorMatch = "SELECT ARRAY_AGG(Author) Names FROM Authored WHERE LOWER(Author) LIKE LOWER('" + name + "%')";
+
+    db.query(authorMatch, (err, result) => {
+        callback(err, result.rows[0].names);
+    });
+}
+exports.getGenreMatch = (name, callback) => {
+    const genreMatch = "SELECT ARRAY_AGG(Name) Names FROM Genre WHERE LOWER(Name) LIKE LOWER('" + name + "%')";
+
+    db.query(genreMatch, (err, result) => {
+        callback(err, result.rows[0].names);
+    });
+}

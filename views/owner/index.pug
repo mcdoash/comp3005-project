@@ -40,7 +40,7 @@ block content
         .form-sect
             label(for="publisher") Publisher: 
             input(type="text" id="publisher" name="publisher" maxlength="30" required)
-            #pub-names
+            #pub-names.autofill
         .form-sect
             label(for="blurb") Blurb: 
             textarea(id="blurb" name="blurb", cols="40", rows="5" maxlength="2500" required)
@@ -65,6 +65,8 @@ block content
         .form-sect
             label(for="authors") Authors: 
             input(type="text" id="authors" name="authors" required)
+            #auth-names.autofill
         .form-sect
             label(for="genres") Genres: 
             input(type="text" id="genres" name="genres" required)
+            #genre-names.autofill
