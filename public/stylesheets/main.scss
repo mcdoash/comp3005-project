@@ -135,6 +135,7 @@ section#book-list {
 /*book info page*/
 section#main-info {
     @include flex;
+    width: 100%;
     background-color: #f2f2f2;
 
     #cover {

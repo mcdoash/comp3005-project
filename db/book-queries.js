@@ -11,6 +11,39 @@ const getTopBooks = {
 //other queries
 const getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book.Release_date, Book.Stock > 0 AS inStock, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Book JOIN Authored ON Book.ISBN = Authored.Book JOIN Genre ON Book.ISBN = Genre.Book WHERE Book.ISBN = $1 GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book. Release_date, Book.Stock";
 
+const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11) RETURNING ISBN;";
+
+
+exports.addBook = (data, callback) => {
+    db.query(newBook, data, (err, result) => {
+        callback(err, result.rows[0].isbn);
+    });
+}
+
+exports.addGenres = (book, genres, callback) => {
+    let values = [];
+    genres.forEach(genre => {
+        values.push("('" + genre + "', '" + book + "')");
+    });
+    const genreQuery = "INSERT INTO Genre VALUES" + values.join();
+
+    db.query(genreQuery, (err) => {
+        callback(err);
+    });
+}
+
+exports.addAuthors = (book, authors, callback) => {
+    let values = [];
+    authors.forEach(author => {
+        values.push("('" + author + "', '" + book + "')");
+    });
+    const authorQuery = "INSERT INTO Authored VALUES" + values.join();
+
+    db.query(authorQuery, (err) => {
+        callback(err);
+    });
+}
+
 
 exports.getPopular = (callback) => {
     db.query(getTopBooks, (err, result) => {

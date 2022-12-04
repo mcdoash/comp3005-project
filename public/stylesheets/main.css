@@ -170,6 +170,7 @@ section#main-info {
   overflow: hidden;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+  width: 100%;
   background-color: #f2f2f2;
 }
 
