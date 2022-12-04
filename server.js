@@ -169,6 +169,46 @@ app.post("/cart", (req, res) => {
 });
 
 
+
+app.post("/publishers", parseInput, checkPub, createPub);
+function parseInput(req, res, next) {
+    req.pubData = Object.values(req.body);
+
+    req.pubData.forEach(item => item = item.replace("'", "''"));
+    next();
+}
+
+//make sure publisher doean't already exist
+function checkPub(req, res, next) {
+    publisher.checkPub(req.body.name, (err, exists) => {
+        if(err) console.error(err.stack);
+        if(exists == 0) next();
+        else {
+            res.status(400).send({error: "Publisher '" + req.body.name + "' already exists"});
+            return;
+        }
+    });
+}
+
+function createPub(req, res) {
+    publisher.addPub(req.pubData, (err) => {
+        if(err) {
+            if(err.code == "23505") { //dup email
+                res.status(401).send({error: "Duplicate email: " + err.detail});
+            }
+            else {
+                console.error(err.stack);
+                res.status(500).send({error: "Publisher could not be created"});
+            }
+            return;
+        }
+        res.status(201).send({success: "Publisher added successfully"});
+        return;
+    });
+}
+
+
+
 //return a list of publishers
 app.get("/publishers", (req, res) => {
     let name = req.query.name;

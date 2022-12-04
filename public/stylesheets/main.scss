@@ -225,13 +225,29 @@ section#report {
     th { background-color: #f2f2f2; }
 }
 
-form#add-book {
-    .autofill div {
+
+section#owner-forms {
+    width: 100%;
+    @include flex;
+    form { 
+        width: 28%; 
         padding: 2%;
-        cursor: pointer; background-color: #dddddd;
+
         
-        &:hover {
-            background-color: #c1c1c1;
+        input[type=text] { width: 100%; }
+        input[type=number] { width: 100px; }
+        input[type=radio] { margin-right: 10px; }
+        //input { width: 70%; }
+    }
+
+    form#add-book {
+        .autofill div {
+            padding: 2%;
+            cursor: pointer; background-color: #dddddd;
+            
+            &:hover {
+                background-color: #c1c1c1;
+            }
         }
     }
 }

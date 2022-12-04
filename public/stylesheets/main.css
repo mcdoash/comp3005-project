@@ -285,13 +285,40 @@ section#report th {
   background-color: #f2f2f2;
 }
 
-form#add-book .autofill div {
+section#owner-forms {
+  width: 100%;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  overflow: hidden;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+section#owner-forms form {
+  width: 28%;
+  padding: 2%;
+}
+
+section#owner-forms form input[type=text] {
+  width: 100%;
+}
+
+section#owner-forms form input[type=number] {
+  width: 100px;
+}
+
+section#owner-forms form input[type=radio] {
+  margin-right: 10px;
+}
+
+section#owner-forms form#add-book .autofill div {
   padding: 2%;
   cursor: pointer;
   background-color: #dddddd;
 }
 
-form#add-book .autofill div:hover {
+section#owner-forms form#add-book .autofill div:hover {
   background-color: #c1c1c1;
 }
 /*# sourceMappingURL=main.css.map */
