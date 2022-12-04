@@ -27,9 +27,10 @@ function showPubNames(names) {
     list.innerHTML = ""; //clear
 
     names.forEach(name => {
+        name = name.replace("'", "&#39;"); //escape '
         let newName = document.createElement("div"); 
         newName.innerText = name;
-        newName.setAttribute("onClick", "setPubName('" + name + "')");
+        newName.setAttribute("onClick", 'setPubName("' + name + '")');
         list.append(newName);
     });
 }
@@ -45,7 +46,7 @@ function setPubName(name) {
 //author autofill
 document.getElementById("authors").addEventListener("input", authorAutofill);
 
-//get names that match current publisher input
+//get names that match current author input
 function authorAutofill() {
     //get last item
     let values = this.value.split(", ");
@@ -72,7 +73,7 @@ function showAuthNames(names) {
     names.forEach(name => {
         let newName = document.createElement("div"); 
         newName.innerText = name;
-        newName.setAttribute("onClick", "setAuthName('" + name + "')");
+        newName.setAttribute("onClick", 'setAuthName("' + name + '")');
         list.append(newName);
     });
 }
@@ -93,6 +94,46 @@ function setAuthName(name) {
 
 //genre autofill
 document.getElementById("genres").addEventListener("input", genreAutofill);
-function genreAutofill() {
 
+function genreAutofill() {
+    //get last item
+    let values = this.value.split(", ");
+    let text = values[values.length-1];
+
+    let req = new XMLHttpRequest();
+	req.onreadystatechange = function() {
+		if(this.readyState == 4) {
+            if(this.status == 200) {
+                const list = JSON.parse(this.responseText).results;
+                showGenreNames(list);
+            }
+        }
+	}
+	req.open("GET", "/genres?name=" + text);
+	req.setRequestHeader("Content-Type", "application/json");
+	req.send();
+}
+
+function showGenreNames(names) {
+    const list = document.getElementById("genre-names");
+    list.innerHTML = ""; //clear
+
+    names.forEach(name => {
+        let newName = document.createElement("div"); 
+        newName.innerText = name;
+        newName.setAttribute("onClick", 'setGenreName("' + name + '")');
+        list.append(newName);
+    });
+}
+
+//set textbox to selected name
+function setGenreName(name) {
+    let values = document.getElementById("genres").value; 
+    values = values.split(", "); 
+    values = values.slice(0, -1); //remove last
+    values.push(name);
+    values = values.join(", ");
+
+    document.getElementById("genres").value = values;
+    document.getElementById("genre-names").innerHTML = ""; //clear
 }

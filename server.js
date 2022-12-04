@@ -172,6 +172,9 @@ app.post("/cart", (req, res) => {
 //return a list of publishers
 app.get("/publishers", (req, res) => {
     let name = req.query.name;
+    name = name.replace("'", "''"); //escape
+    if(!name) name = "";
+
     publisher.getPubMatch(name, (err, results) => {
         if(err) console.error(err.stack);
         res.status(200).send({results: results});
@@ -181,6 +184,9 @@ app.get("/publishers", (req, res) => {
 //return a list of genres
 app.get("/genres", (req, res) => {
     let name = req.query.name;
+    name = name.replace("'", "''"); //escape
+    if(!name) name = "";
+
     book.getGenreMatch(name, (err, results) => {
         if(err) console.error(err.stack);
         res.status(200).send({results: results});
@@ -191,6 +197,9 @@ app.get("/genres", (req, res) => {
 //return a list of authors
 app.get("/authors", (req, res) => {
     let name = req.query.name;
+    name = name.replace("'", "''"); //escape
+    if(!name) name = "";
+
     book.getAuthorMatch(name, (err, results) => {
         if(err) console.error(err.stack);
         res.status(200).send({results: results});
