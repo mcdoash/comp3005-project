@@ -17,6 +17,7 @@ app.use(
 
 //database integration handled in another file
 const account = require("./db/account-queries");
+const publisher = require("./db/publisher-queries");
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -164,4 +165,17 @@ app.post("/cart", (req, res) => {
     req.session.cart.total.price += req.body.price;
     req.session.cart.total.quantity ++;
     res.status(204).send();
+});
+
+
+//return a list of publishers
+app.get("/publishers", (req, res) => {
+    let name = req.query.name;
+    if(!name) { //empty
+
+    }
+    publisher.getPubMatch(name, (err, results) => {
+        if(err) console.error(err.stack);
+        res.status(200).send({results: results});
+    });
 });

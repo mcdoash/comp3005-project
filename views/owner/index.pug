@@ -1,5 +1,8 @@
 extends ../layout
 
+block scripts
+    +script("autofill")
+
 block content
     form(id="report-form" name="report-form" action="/owner/reports" method="get") 
         h2 Get Report
@@ -22,3 +25,46 @@ block content
             label(for="author") By author
         br
         input#get-report(type="submit" value="Next")
+
+    form(id="add-book" name="add-book" action="/books" method="post") 
+        h2 Add Book
+        .form-sect
+            label(for="isbn") ISBN: 
+            input(type="text" id="isbn" name="isbn" minlength="10" maxlength="10" required) 
+        .form-sect
+            label(for="title") Title: 
+            input(type="text" id="title" name="title" maxlength="50" required)
+        .form-sect
+            label(for="cover") Cover: 
+            input(type="text" id="cover" name="cover" maxlength="50" required)
+        .form-sect
+            label(for="publisher") Publisher: 
+            input(type="text" id="publisher" name="publisher" maxlength="30" required)
+            #pub-names
+        .form-sect
+            label(for="blurb") Blurb: 
+            textarea(id="blurb" name="blurb", cols="40", rows="5" maxlength="2500" required)
+        .form-sect
+            label(for="price") Price: 
+            input(type="number" id="price" name="price" step="0.01" min="0.01" max="10000" required)
+        .form-sect
+            label(for="page_num") Page num: 
+            input(type="number" id="page_num" name="page_num" min="1" max="100000" required)
+        //format?
+        .form-sect
+            label(for="release_date") Release date:
+            input(type="date" id="release_date" name="release_date" required)
+        .form-sect
+            label(for="stock") Stock: 
+            input(type="number" id="stock" name="stock" min="0" max="1000000" required)
+        .form-sect
+            label(for="sale_percent") Sale %: 
+            input(type="number" id="sale_percent" name="sale_percent" step="0.01" min="0.01" max="1" required)
+        br
+        p Seperate authors and genres with a comma <br>(ex. "Fantasy, Science Fiction")
+        .form-sect
+            label(for="authors") Authors: 
+            input(type="text" id="authors" name="authors" required)
+        .form-sect
+            label(for="genres") Genres: 
+            input(type="text" id="genres" name="genres" required)
