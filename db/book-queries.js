@@ -13,9 +13,12 @@ const getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher
 
 const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11) RETURNING ISBN;";
 
+const checkBook = "SELECT COUNT(*) AS Exists FROM Book WHERE ISBN = $1;"
+
 
 exports.addBook = (data, callback) => {
     db.query(newBook, data, (err, result) => {
+        if(err) console.log(err);
         callback(err, result.rows[0].isbn);
     });
 }
@@ -48,6 +51,13 @@ exports.addAuthors = (book, authors, callback) => {
 exports.getPopular = (callback) => {
     db.query(getTopBooks, (err, result) => {
         callback(err, result.rows);
+    });
+}
+
+
+exports.checkBook = (isbn, callback) => {
+    db.query(checkBook, [isbn], (err, result) => {
+        callback(err, result.rows[0].exists);
     });
 }
 

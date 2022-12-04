@@ -1,10 +1,11 @@
 const express = require("express");
 let router = express.Router();
 const db = require("../db/book-queries");
+const publisher = require("../db/publisher-queries");
 
 //list of books
 router.get("/", parseQueries, getBooks, sendBooks);
-router.post("/", parseInput, createBook, createGenre, createAuthored);
+router.post("/", parseInput, checkIsbn, checkPub, createBook, createGenre, createAuthored);
 router.get("/:isbn", sendOneBook);
 
 function parseQueries(req, res, next) {
@@ -55,6 +56,8 @@ function parseInput(req, res, next) {
     req.genres = req.body.genres.replace("'", "''"); //escape
     req.genres = req.genres.split(", ");
 
+    req.body.publisher = req.body.publisher.replace("'", "''"); //escape
+
     req.bookData = [ //format
         req.body.isbn,
         req.body.title,
@@ -70,6 +73,28 @@ function parseInput(req, res, next) {
         parseFloat(req.body.sale_percent)
     ];
     next();
+}
+
+//make sure isbn for new book does not already exist
+function checkIsbn(req, res, next) {
+    db.checkBook(req.body.isbn, (err, exists) => {
+        if(err) console.error(err.stack);
+        if(exists == 0) next();
+        else {
+            res.status(400).send({error: "Book with isbn " + req.body.isbn + " already exists"});
+        }
+    });
+}
+
+//make sure publisher for new book exists
+function checkPub(req, res, next) {
+    publisher.checkPub(req.body.publisher, (err, exists) => {
+        if(err) console.error(err.stack);
+        if(exists == 1) next();
+        else {
+            res.status(400).send({error: "Publisher for new book does not exist"});
+        }
+    });
 }
 
 function createBook(req, res, next) {
