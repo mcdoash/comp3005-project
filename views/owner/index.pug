@@ -2,6 +2,7 @@ extends ../layout
 
 block scripts
     +script("autofill")
+    +script("owner")
 
 block content
     section#owner-forms
@@ -37,7 +38,7 @@ block content
                 input(type="text" id="title" name="title" maxlength="50" required)
             .form-sect
                 label(for="cover") Cover: 
-                input(type="text" id="cover" name="cover" maxlength="50" required)
+                input(type="text" id="cover" name="cover" maxlength="50")
             .form-sect
                 label(for="publisher") Publisher: 
                 input(type="text" id="publisher" name="publisher" maxlength="30" required)
@@ -118,3 +119,20 @@ block content
                 input(type="text" id="account_num" name="account_num" required maxlength="25")
             br
             input#send-pub(type="submit" value="Next")
+
+        form(id="remove-book" name="remove-book" onsubmit="removeBook()") 
+            h2 Remove Book from Store
+            .form-sect
+                label(for="isbn") ISBN: 
+                input(type="text" id="isbn" name="isbn" minlength="10" maxlength="10" required) 
+            br
+            input#send-remov(type="submit" value="Next")
+
+        
+        form(id="restore-book" name="restore-book" onsubmit="restoreBook()") 
+            h2 Restore Book to Store
+            .form-sect
+                label(for="isbn") ISBN: 
+                input(type="text" id="isbn" name="isbn" minlength="10" maxlength="10" required) 
+            br
+            input#send-restore(type="submit" value="Next")

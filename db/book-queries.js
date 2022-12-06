@@ -9,11 +9,15 @@ const getTopBooks = {
 } //pagination. refresh
 
 //other queries
-const getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book.Release_date, Book.Stock > 0 AS inStock, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Book JOIN Authored ON Book.ISBN = Authored.Book JOIN Genre ON Book.ISBN = Genre.Book WHERE Book.ISBN = $1 GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book. Release_date, Book.Stock";
+const getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book.Release_date, Book.Stock > 0 AS inStock, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Book JOIN Authored ON Book.ISBN = Authored.Book JOIN Genre ON Book.ISBN = Genre.Book WHERE Book.ISBN = $1 AND Selling = TRUE GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book. Release_date, Book.Stock";
 
-const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11) RETURNING ISBN;";
+const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11, TRUE) RETURNING ISBN;";
 
 const checkBook = "SELECT COUNT(*) AS Exists FROM Book WHERE ISBN = $1;"
+
+const removeBook = "UPDATE Book SET Selling = FALSE WHERE Book.ISBN = $1;";
+
+const restoreBook = "UPDATE Book SET Selling = TRUE WHERE Book.ISBN = $1;";
 
 
 //create a new book, return isbn
@@ -69,6 +73,7 @@ exports.checkBook = (isbn, callback) => {
 //retrieve a specific book by isbn
 exports.getSpecific = (isbn, callback) => {
     db.query(getSpecficBook, [isbn], (err, result) => {
+        if(err) callback(err);
         callback(err, result.rows[0]);
     });
 }
@@ -106,6 +111,7 @@ function getParams(params) {
     if(params.format) {
         conditions.push("Book.Book_format = '" + params.format + "'");
     }
+    conditions.push("Book.Selling = TRUE")
 
     return join + "WHERE " + conditions.join(" AND ");
 }
@@ -143,5 +149,17 @@ exports.getGenreMatch = (name, callback) => {
 
     db.query(genreMatch, (err, result) => {
         callback(err, result.rows[0].names);
+    });
+}
+
+
+exports.removeBook = (isbn, callback) => {
+    db.query(removeBook, [isbn], (err) => {
+        callback(err);
+    });
+}
+exports.restoreBook = (isbn, callback) => {
+    db.query(restoreBook, [isbn], (err) => {
+        callback(err);
     });
 }

@@ -6,6 +6,8 @@ const publisher = require("../db/publisher-queries");
 //list of books
 router.get("/", parseQueries, getBooks, sendBooks);
 router.post("/", parseInput, checkIsbn, checkPub, createBook, createGenre, createAuthored);
+router.delete("/", removeBook);
+router.put("/", restoreBook);
 router.get("/:isbn", sendOneBook);
 
 function parseQueries(req, res, next) {
@@ -123,12 +125,58 @@ function createAuthored(req, res) {
 }
 
 
+//remove a book from the store
+function removeBook(req, res) {
+    db.checkBook(req.body.isbn, (err, exists) => {
+        if(err) console.error(err.stack);
+        if(exists == 1) {
+            db.removeBook(req.body.isbn, (err) => {
+                if(err) {
+                    console.error(err.stack);
+                    res.status(500).send({error: "Error. Could not remove book"});
+                    return;
+                }
+                res.status(204).send({success: "Book successfully removed from store"});
+                return;
+            })
+        }
+        else {
+            res.status(400).send({error: "Book with isbn " + req.body.isbn + " does not exist"});
+            return;
+        }
+    });
+}
+
+function restoreBook(req, res) {
+    db.checkBook(req.body.isbn, (err, exists) => {
+        if(err) console.error(err.stack);
+        if(exists == 1) { //isbn valid
+            db.restoreBook(req.body.isbn, (err) => {
+                if(err) {
+                    console.error(err.stack);
+                    res.status(500).send({error: "Error. Could not restore book"});
+                    return;
+                }
+                res.status(204).send({success: "Book successfully restored to store"});
+                return;
+            })
+        }
+        else {
+            res.status(400).send({error: "Book with isbn " + req.body.isbn + " does not exist"});
+            return;
+        }
+    });
+}
 
 
 //individual book
 router.param("isbn" , (req, res, next, isbn) => {
     db.getSpecific(isbn, (err, result) => {
         if(err) console.error(err.stack);
+        if(!result) {
+            res.status(404).send({error: "Book with isbn " + isbn + " does not exist"});
+            return;
+        }
         res.book = result;
         next();
     });
