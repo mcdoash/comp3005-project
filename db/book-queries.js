@@ -1,15 +1,18 @@
 const db = require("./");
 const booksPerPage = 20;
 
+const listAttr = "ISBN, Title, Cover, Authors, Price, inStock";
+
 //prepared statments
 const getTopBooks = {
     name: "getPopular",
-    text: "SELECT * FROM Top_book_data LIMIT $1 OFFSET $2",
+    text: "SELECT " + listAttr + " FROM Storefront LIMIT $1 OFFSET $2",
     values: [booksPerPage, 0]
 } //pagination. refresh
 
+
 //other queries
-const getSpecficBook = "SELECT Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book.Release_date, Book.Stock > 0 AS inStock, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Book JOIN Authored ON Book.ISBN = Authored.Book JOIN Genre ON Book.ISBN = Genre.Book WHERE Book.ISBN = $1 AND Selling = TRUE GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Publisher, Book.Blurb, Book.Price, Book.page_num, Book.Book_format, Book. Release_date, Book.Stock";
+const getSpecficBook = "SELECT * FROM Storefront WHERE ISBN = $1";
 
 const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11, TRUE) RETURNING ISBN;";
 
@@ -84,7 +87,7 @@ exports.getBooks = (params, callback) => {
     let conditions = getParams(params);
     let offset = (params.page - 1) * booksPerPage;
 
-    let query = "SELECT Book.ISBN, Book.Title, Book.Cover, ARRAY_AGG(DISTINCT Authored.Author) Authors, Book.Price  FROM Book JOIN Authored ON Book.ISBN = Authored.Book " + conditions + " GROUP BY Book.ISBN, Book.Title, Book.Cover, Book.Price LIMIT " + booksPerPage + " OFFSET " + offset; 
+    let query = "SELECT " + listAttr  + " FROM Storefront WHERE " + conditions + " LIMIT " + booksPerPage + " OFFSET " + offset; 
 
     db.query(query, [], (err, result) => {
         callback(err, result.rows);
@@ -93,27 +96,24 @@ exports.getBooks = (params, callback) => {
 
 //format query conditions
 function getParams(params) {
-    let join = ""; //if genre join table
     let conditions = [];
 
     //isbn -> go to specific book
     //regex for similar results
     if(params.genre) {
-        join = "JOIN Genre ON Book.ISBN = Genre.Book ";
-        conditions.push("Genre.Name = '" + params.genre + "'");
+        conditions.push("'" + params.genre + "' =  ANY(Genres)");
     }
     if(params.author) {
-        conditions.push("Book.ISBN IN (SELECT Book.ISBN FROM Book JOIN Authored ON Book.ISBN = Authored.Book WHERE Authored.Author ='" + params.author + "')");
+        conditions.push("'" + params.author + "' = ANY(Authors)");
     }
     if(params.title) {
-        conditions.push("Book.Title = '" + params.title + "'");
+        conditions.push("Title ~* '\\m(" + params.title + ")\\M'"); //word search
     }
     if(params.format) {
-        conditions.push("Book.Book_format = '" + params.format + "'");
+        conditions.push("Book_format = '" + params.format + "'");
     }
-    conditions.push("Book.Selling = TRUE")
 
-    return join + "WHERE " + conditions.join(" AND ");
+    return conditions.join(" AND ");
 }
 
 
