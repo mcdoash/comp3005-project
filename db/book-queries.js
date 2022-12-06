@@ -1,18 +1,20 @@
 const db = require("./");
 const booksPerPage = 20;
 
-const listAttr = "ISBN, Title, Cover, Authors, Price, inStock";
+//attributes for viewing list of books
+const listAttr = "Storefront.ISBN, Storefront.Title, Storefront.Cover, ARRAY_AGG(DISTINCT Authored.Author) Authors, Storefront.Price, Storefront.inStock";
+const listGroup = "Storefront.ISBN, Storefront.Title, Storefront.Cover, Storefront.Price, Storefront.inStock";
 
 //prepared statments
 const getTopBooks = {
     name: "getPopular",
-    text: "SELECT " + listAttr + " FROM Storefront LIMIT $1 OFFSET $2",
+    text: "SELECT " + listAttr + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book GROUP BY " + listGroup + " LIMIT $1 OFFSET $2",
     values: [booksPerPage, 0]
 } //pagination. refresh
 
 
 //other queries
-const getSpecficBook = "SELECT * FROM Storefront WHERE ISBN = $1";
+const getSpecficBook = "SELECT Storefront.*, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book JOIN Genre ON Storefront.ISBN = Genre.Book WHERE Storefront.ISBN = $1 GROUP BY Storefront.ISBN, Storefront.Title, Storefront.Cover, Storefront.Publisher, Storefront.Blurb, Storefront.Price, Storefront.page_num, Storefront.Book_format, Storefront.Release_date, Storefront.inStock;";
 
 const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11, TRUE) RETURNING ISBN;";
 
@@ -87,7 +89,7 @@ exports.getBooks = (params, callback) => {
     let conditions = getParams(params);
     let offset = (params.page - 1) * booksPerPage;
 
-    let query = "SELECT " + listAttr  + " FROM Storefront WHERE " + conditions + " LIMIT " + booksPerPage + " OFFSET " + offset; 
+    let query = "SELECT " + listAttr  + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book " + conditions + " GROUP BY " + listGroup + " LIMIT " + booksPerPage + " OFFSET " + offset; 
 
     db.query(query, [], (err, result) => {
         callback(err, result.rows);
@@ -97,15 +99,17 @@ exports.getBooks = (params, callback) => {
 //format query conditions
 function getParams(params) {
     let conditions = [];
+    let join = ""; //if genre join table
 
     //isbn -> go to specific book
     //regex for similar results
     if(params.genre) {
-        conditions.push("'" + params.genre + "' =  ANY(Genres)");
+        join = "JOIN Genre ON Storefront.ISBN = Genre.Book ";
+        conditions.push("Genre.Name = '" + params.genre + "'");
     }
     if(params.author) {
-        conditions.push("'" + params.author + "' = ANY(Authors)");
-    }
+        conditions.push("Storefront.ISBN IN (SELECT Storefront.ISBN FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book WHERE Authored.Author ='" + params.author + "')");
+    } 
     if(params.title) {
         conditions.push("Title ~* '\\m(" + params.title + ")\\M'"); //word search
     }
@@ -113,7 +117,7 @@ function getParams(params) {
         conditions.push("Book_format = '" + params.format + "'");
     }
 
-    return conditions.join(" AND ");
+    return join + "WHERE " + conditions.join(" AND ");
 }
 
 
@@ -131,7 +135,7 @@ exports.checkStock = (books, callback) => {
 
 
 /* match where a word starts with given string
-   ex. "fiction" gets both "Science Ficiton" and
+   ex. "fict" gets both "Science Ficiton" and
        "Speculative Fiction" but "ie" does not 
        get "ScIEnce Fiction" */
 
