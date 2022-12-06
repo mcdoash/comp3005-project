@@ -30,7 +30,4 @@ block content
                 p <b>Page count:</b> #{book.page_num}
                 p <b>Publisher:</b> #{book.publisher}
 
-            if book.instock
-                +buyBtn(book)
-            else   
-                button.buy(disabled) Out of Stock
+            +buyBtn(book)

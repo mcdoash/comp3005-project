@@ -13,4 +13,8 @@ mixin authorLinks(authors)
     != authorLinks
 
 mixin buyBtn(book)
-    button.buy(onclick="addToCart('" + book.isbn + "', '" + book.title + "', " + book.price + ")") $#{book.price} - Add to Cart
+    if book.instock
+        button.buy(onclick="addToCart('" + book.isbn + "', '" + book.title + "', " + book.price + ")") $#{book.price} - Add to Cart
+    else   
+        button.buy(disabled) Out of Stock
+    
