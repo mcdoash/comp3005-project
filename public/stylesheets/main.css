@@ -245,6 +245,11 @@ section#cart #total {
   font-weight: bold;
 }
 
+section#cart #place-order {
+  padding: 0;
+  background-color: initial;
+}
+
 section.checkout {
   width: 80%;
 }
@@ -320,5 +325,42 @@ section#owner-forms form#add-book .autofill div {
 
 section#owner-forms form#add-book .autofill div:hover {
   background-color: #c1c1c1;
+}
+
+section.order {
+  width: 20%;
+  margin: 1%;
+  padding: 2%;
+  display: block;
+  background-color: #dfdfdf;
+}
+
+section.order .part {
+  margin-bottom: 15px;
+  padding: 4%;
+  background-color: #f5f5f5;
+}
+
+section#order-books {
+  width: 50%;
+}
+
+section#order-books .cart-item {
+  margin: 2%;
+  padding: 2%;
+  background-color: #f5f5f5;
+}
+
+section#order-books .cart-item h3, section#order-books .cart-item span {
+  display: inline-block;
+}
+
+section#order-books .cart-item span {
+  float: right;
+}
+
+section#order-books #total {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 /*# sourceMappingURL=main.css.map */

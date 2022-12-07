@@ -1,0 +1,55 @@
+extends layout
+
+block content
+    section.order#order-books
+        h1 Order ##{order.data.number}
+        each book in order.books
+            .cart-item
+                h3  
+                    a(href="/books/" + book.isbn) #{book.title}
+                - const price = parseInt(book.price).toFixed(2);
+                span $#{price} - #{book.quantity}x
+        - const total = parseInt(order.data.total).toFixed(2);
+        #total Total - $#{total}
+
+    section.order#address-card
+        h3 Shipped To
+        .part
+            b #{order.data.fname} #{order.data.lname} 
+            br
+            p #{order.data.street}
+            p #{order.data.city} #{order.data.province} #{order.data.postal_code}
+            p #{order.data.country}
+            p #{order.data.phone_num}
+        
+        h3 Billed To
+        .part
+            p $#{total} - #{order.data.card_num}
+
+
+    section.order#progress
+        if order.data.arrival_date
+            h3 Arrived on 
+            .part
+                b #{order.data.arrival_date.toLocaleString()}
+        else
+            h3 Tracking
+            .part
+                if !order.data.tracking
+                    p Tracking not currently available
+                else
+                    a Link to external site
+
+        h3 Status
+        .part
+            p In #{order.data.cur_location}
+
+        if order.data.expected_date
+            h3 Expected Arrival
+            .part
+                p #{order.data.expected_date.toLocaleString()}
+
+
+        //{"data":{"number":115,"total":"342.00","order_date":"2022-12-07T05:00:00.000Z","tracking":null,"cur_location":"Processing","expected_date":null,"arrival_date":null,
+        //"fname":"adfas","lname":"adf","street":"asdf","city":"sdfsd","province":"as","postal_code":"fasdf","country":"afsdfas","phone_num":"123-435-6565","card_num":"************23412"},
+        //"books":[{"isbn":"9117232372","title":"input benchmark Wooden","price":"133.00","quantity":2},{"isbn":"7619454760","title":"Generic Horizontal Avon","price":"10.00","quantity":1},{"isbn":"6752476965","title":"black program","price":"66.00","quantity":1}]}
