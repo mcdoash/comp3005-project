@@ -1,18 +1,24 @@
 extends layout
 
 block content
-    ul
-        li
-            a(href="/books") Browse Books
-        li
-            a(href="/cart") View Cart
-        if !session.signedIn
-            li
-                a(href="/login") Log In/Register
-        if session.signedIn
-            li 
-                a(href="/logout") Log Out
-        li 
-            a(href="/orders") View Orders
-        li 
-            a(href="/owner") (For testing) View Owner options
+    #welcome
+        h1 Welcome to Look Inna Book
+        h2 Our Top Books
+    section#book-list.top
+        each book in topBooks
+            .result
+                a.cover(href="/books/" + book.isbn)
+                    img(src=book.cover)
+                .book-data
+                    h2
+                        a(href="/books/" + book.isbn) #{book.title}
+
+                    - let authors = [];
+                    each author in book.authors
+                        - authors.push('<a href="/books?author=' + author + '">' + author + '</a>');
+                    - authors = authors.join(", ");
+
+                    span.authors
+                        != authors
+
+                    +buyBtn(book)

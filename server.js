@@ -15,16 +15,17 @@ app.use(
   })
 );
 
-//database integration handled in another file
-const account = require("./db/account-queries");
-const publisher = require("./db/publisher-queries");
-const book = require("./db/book-queries");
-
 app.use(express.json());
 app.use(express.static("public"));
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }))
+
+
+//database integration handled in another file
+const account = require("./db/account-queries");
+const publisher = require("./db/publisher-queries");
+const book = require("./db/book-queries");
 
 //routers
 let bookRouter = require("./routes/book-router");
@@ -44,10 +45,15 @@ app.listen(3000);
 console.log("Server running on port 3000");
 
 
+app.get("/", getPopBooks, showIndex);
 
-app.get("/", showIndex);
-
-//get data
+function getPopBooks(req, res, next) {
+    book.getPopular((err, result) => {
+        if(err) console.error(err.stack);
+        res.books = result;
+        next();
+    });
+}
 
 function testLogIn(req, res, next) {
     account.logIn("Mekhi51@gmail.com", "5W71FtXg0WNAbcl", (err, success) => {
@@ -92,7 +98,8 @@ function testLogIn(req, res, next) {
 
 function showIndex(req, res) {
     res.status(200).render("index", {
-        session: req.session
+        session: req.session,
+        topBooks: res.books
     });
 }
 

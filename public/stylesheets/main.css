@@ -122,6 +122,16 @@ form label {
   margin-right: 5px;
 }
 
+#welcome {
+  width: 100%;
+  margin: 20px 10px;
+}
+
+#welcome h2 {
+  margin-top: 20px;
+  text-decoration: underline;
+}
+
 section#login, section#register {
   width: 30%;
 }
@@ -185,6 +195,10 @@ section#book-list #pagination button#back {
 
 section#book-list #pagination button#next {
   float: right;
+}
+
+section#book-list.top {
+  width: 100%;
 }
 
 /*book info page*/
