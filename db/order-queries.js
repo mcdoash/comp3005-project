@@ -9,6 +9,8 @@ const getOrderData = "SELECT Book_order.Number, Book_order.total, Book_order.Ord
 
 const getOrderBooks = "SELECT Book.ISBN, Book.Title, Book.Price, Sale.Quantity FROM Sale JOIN Book_order ON Sale.Order_num = Book_order.Number JOIN Book ON Sale.Book = Book.ISBN WHERE Book_order.Number = $1;";
 
+const getUserOrders = "SELECT Number, Order_date, Total, (Arrival_date IS NULL) AS inProgress FROM Book_order WHERE Account = $1 ORDER BY inProgress DESC, Order_date DESC;";
+
 
 exports.getAccountData = (email, callback) => {
     db.query(getAddresses, [email], (err, result) => {
@@ -56,7 +58,7 @@ exports.getOrder = (num, callback) => {
         if(err) callback(err);
         else {
             orderData.data = result.rows[0];
-            
+
             db.query(getOrderBooks, [num], (err, result) => {
                 orderData.books = result.rows;
                 callback(err, orderData);
@@ -64,4 +66,10 @@ exports.getOrder = (num, callback) => {
         }
     });
     
+}
+
+exports.getUserOrders = (user, callback) => {
+    db.query(getUserOrders, [user], (err, result) => {
+        callback(err, result.rows);
+    });
 }

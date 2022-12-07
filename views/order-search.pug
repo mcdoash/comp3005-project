@@ -1,0 +1,27 @@
+extends layout
+
+block scripts
+    +script("browse")
+
+block content
+    form(id="order" name="order" onsubmit="findOrder()") 
+        h2 Search by order number:
+            .form-sect
+                input(type="number" name="number" required)
+                input(type="submit" value="submit")
+
+    if session.signedIn
+        h2 Your Orders
+        section#order-list
+            each order in session.orders
+                .order
+                    h3
+                        a(href="/orders/" + order.number) ##{order.number} 
+                    if order.inprogress
+                        span.prog In Progress
+                    else
+                        span.prog <b> Completed </b>
+                    br
+                    b $#{order.total}
+                    p #{order.order_date.toDateString()}
+                

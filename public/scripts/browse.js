@@ -5,3 +5,9 @@ function changePage(num) {
     sParams.set("page", num);
     window.location.href = "/books?" + sParams.toString();
 }
+
+function findOrder() {
+    event.preventDefault();
+    const num = document.forms["order"]["number"].value;
+    window.location.href = "/orders/" + num;
+}

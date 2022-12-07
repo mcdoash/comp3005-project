@@ -1,11 +1,12 @@
 const express = require("express");
 let router = express.Router();
 const db = require("../db/order-queries");
-const bookDb = require("../db/book-queries");
 
 router.post("/", createOrder, createSales);
+router.get("/", getUserOrders, showOrderList);
 router.get("/:order", showOrder);
 
+//create the order based on cart
 function createOrder(req, res, next) { 
     db.createOrder(req.session.user.email, req.session.cart, (err, num) => {
         if(err) console.error(err.stack);
@@ -14,17 +15,22 @@ function createOrder(req, res, next) {
     });
 }
 
+//create sales for the order
 function createSales(req, res) {
     db.createSales(res.orderNum, req.session.cart.books, (err) => {
-        if(err) console.error(err.stack);
-        
+        if(err) {
+            console.error(err.stack);
+            res.status(500).send({error: "Problem creating order"});
+            return;
+        }
+        //redirect to new order page
         res.statusCode = 204;
         res.redirect("/orders/" + res.orderNum);
         return;
     });
 }
 
-
+//get order data for a particular order
 router.param("order" , (req, res, next, num) => {
     db.getOrder(num, (err, order) => {
         if(err) console.error(err.stack);
@@ -38,9 +44,30 @@ router.param("order" , (req, res, next, num) => {
     });
 });
 
-
+//display a particular order
 function showOrder(req, res) {
     res.status(200).render("order", {
+        order: res.order
+    });
+}
+
+
+
+function getUserOrders(req, res, next) {
+    if(!req.session.signedIn) next();
+    else {
+        db.getUserOrders(req.session.user.email, (err, orders) => {
+            if(err) console.error(err.stack);
+            req.session.orders = orders;
+            next();
+        });
+    }
+}
+
+//show the order search/list page
+function showOrderList(req, res) {
+    res.status(200).render("order-search", {
+        session: req.session,
         order: res.order
     });
 }

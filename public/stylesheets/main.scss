@@ -187,7 +187,9 @@ section#cart {
         padding: 2%;
         background-color: #f2f2f2;
         
+        
         h3, span { display: inline-block; }
+        h3 { width: 80%; }
         span {float: right;}
     }
 
@@ -276,11 +278,36 @@ section#order-books {
         background-color: #f5f5f5;
         
         h3, span { display: inline-block; }
-        span {float: right;}
+        h3 { width: 80%; }
+        span { float: right; } 
     }
 
     #total {
         font-size: 1.2rem;
         font-weight: bold;
+    }
+}
+
+
+form#order {
+    width: 100%;
+    background-color: initial;
+    padding: 1%;
+}
+section#order-list {
+    width: 100%;
+    @include flex;
+
+    .order {
+        width: 23%;
+        margin: 10px;
+        padding: 4%;
+        background-color: #f5f5f5;
+    
+        h3, span.prog { display: inline-block; }
+        h3 { width: 25%; }
+        span { float: right; }
+
+        &.complete { background-color: #dfdfdf; }
     }
 }

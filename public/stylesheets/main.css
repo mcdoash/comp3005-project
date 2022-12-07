@@ -236,6 +236,10 @@ section#cart .cart-item h3, section#cart .cart-item span {
   display: inline-block;
 }
 
+section#cart .cart-item h3 {
+  width: 80%;
+}
+
 section#cart .cart-item span {
   float: right;
 }
@@ -355,6 +359,10 @@ section#order-books .cart-item h3, section#order-books .cart-item span {
   display: inline-block;
 }
 
+section#order-books .cart-item h3 {
+  width: 80%;
+}
+
 section#order-books .cart-item span {
   float: right;
 }
@@ -362,5 +370,44 @@ section#order-books .cart-item span {
 section#order-books #total {
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+form#order {
+  width: 100%;
+  background-color: initial;
+  padding: 1%;
+}
+
+section#order-list {
+  width: 100%;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  overflow: hidden;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+section#order-list .order {
+  width: 23%;
+  margin: 10px;
+  padding: 4%;
+  background-color: #f5f5f5;
+}
+
+section#order-list .order h3, section#order-list .order span.prog {
+  display: inline-block;
+}
+
+section#order-list .order h3 {
+  width: 25%;
+}
+
+section#order-list .order span {
+  float: right;
+}
+
+section#order-list .order.complete {
+  background-color: #dfdfdf;
 }
 /*# sourceMappingURL=main.css.map */
