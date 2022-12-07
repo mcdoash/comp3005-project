@@ -72,6 +72,31 @@ button:disabled, input:disabled {
       flex-wrap: wrap;
 }
 
+nav {
+  padding: 10px;
+  background-color: #606060;
+}
+
+nav li {
+  display: inline;
+  margin: 5px 20px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  list-style-type: none;
+}
+
+nav li a {
+  color: #ffffff;
+}
+
+nav li#owner {
+  margin-left: 200px;
+}
+
+nav li#owner a {
+  color: #d7d7d7;
+}
+
 aside {
   width: 20vw;
   min-height: 100vh;

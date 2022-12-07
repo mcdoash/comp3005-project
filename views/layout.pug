@@ -6,6 +6,23 @@ html(lang="en")
             +css("main")
 
     body
+        nav
+            ul
+                li
+                    a(href="/books") Browse
+                li
+                    a(href="/cart") Cart
+                if !session.signedIn
+                    li
+                        a(href="/login") Log In/Register
+                if session.signedIn
+                    li 
+                        a(href="/logout") Log Out
+                li 
+                    a(href="/orders") Orders
+                li#owner
+                    a(href="/owner") Owner options
+                    
         #content
             block content
     

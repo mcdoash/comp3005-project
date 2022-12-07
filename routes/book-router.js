@@ -44,6 +44,7 @@ function getBooks(req, res, next) {
 
 function sendBooks(req, res) {
     res.status(200).render("book-results", {
+        session: req.session,
         books: res.books,
         page: req.query.page
     });
@@ -183,7 +184,10 @@ router.param("isbn" , (req, res, next, isbn) => {
 });
 
 function sendOneBook(req, res) {
-    res.status(200).render("book", {book: res.book});
+    res.status(200).render("book", {
+        session: req.session,
+        book: res.book
+    });
 }
 
 module.exports = router;

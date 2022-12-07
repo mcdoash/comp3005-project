@@ -47,6 +47,7 @@ router.param("order" , (req, res, next, num) => {
 //display a particular order
 function showOrder(req, res) {
     res.status(200).render("order", {
+        session: req.session,
         order: res.order
     });
 }

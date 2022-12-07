@@ -45,7 +45,7 @@ console.log("Server running on port 3000");
 
 
 
-app.get("/", testLogIn);
+app.get("/", showIndex);
 
 //get data
 
@@ -98,7 +98,7 @@ function showIndex(req, res) {
 
 //log in page
 app.get("/login", (req, res) => {
-    res.status(200).render("login");
+    res.status(200).render("login", {session: req.session});
 });
 
 //log in attempt

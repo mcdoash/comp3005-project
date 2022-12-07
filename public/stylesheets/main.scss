@@ -68,6 +68,25 @@ button, input {
     @include flex;
 }
 
+nav {
+    padding: 10px;
+    background-color: #606060;
+
+    li { 
+        display: inline;
+        margin: 5px 20px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        list-style-type: none;
+
+        a { color: #ffffff; }
+        &#owner { 
+            margin-left: 200px;
+            a { color: #d7d7d7; } 
+        }
+    }
+}
+
 aside {
     width: 20vw;
     min-height: 100vh;

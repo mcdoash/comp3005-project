@@ -3,7 +3,7 @@ let router = express.Router();
 const db = require("../db/sale-queries");
 
 router.get("/", (req, res) => {
-    res.status(200).render("owner/");
+    res.status(200).render("owner/", {session: req.session});
 });
 
 
@@ -35,6 +35,7 @@ function getReport(req, res, next) {
 
 function sendReport(req, res) {
     res.status(200).render("owner/report-list", {
+        session: req.session,
         report: {
             type: req.query.type,
             from: req.query.from_date,
