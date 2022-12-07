@@ -70,12 +70,16 @@ function confirmStock(req, res, next) {
 
         results.forEach((book) => {
             let i = req.session.cart.books.findIndex(item => item.isbn == book.isbn);
-            
+
             //not enough stock
             if(book.stock < req.session.cart.books[i].quantity) {
                 if(book.stock > 0) { //reduce quantity
-                    req.session.cart.total.quantity -= (req.session.cart.books[i].quantity - book.stock);
+                    const qRemove = req.session.cart.books[i].quantity - book.stock;
+                    req.session.cart.total.quantity -= qRemove;
                     req.session.cart.books[i].quantity = book.stock;
+
+                    //update price
+                    req.session.cart.total.price -= req.session.cart.books[i].price * qRemove;
 
                     req.session.cart.errors.push({
                         isbn: req.session.cart.books[i].isbn,
@@ -89,6 +93,10 @@ function confirmStock(req, res, next) {
                         title: req.session.cart.books[i].title,
                         error: "out of stock"
                     });
+                    //update price
+                    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
+
+                    //update quantity
                     req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
 
                     req.session.cart.books.splice(i, 1);

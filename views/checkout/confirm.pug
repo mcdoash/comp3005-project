@@ -1,6 +1,8 @@
 extends ../layout
 
 block content
+    h1#confirm(style="width:100%; margin:20px 20px 0;") Confirm Order
+    
     section#cart
         if session.cart.errors.length > 0
             h3 Changes to Cart:
@@ -17,6 +19,22 @@ block content
 
         #total Total - $#{session.cart.total.price.toFixed(2)}
 
-        //show card & address
-        form(id="place-order" name="place-orde" action="/orders" method="post") 
-            input#send-restore(type="submit" value="Place Order")
+
+    - let orderCard = session.user.cards.find(card => card.card_id == session.cart.card);
+    - let orderShip = session.user.addresses.find(address => address.id == session.cart.address);
+    
+    section.confirm
+        h3 Ship Address
+        b #{orderShip.fname} #{orderShip.lname} 
+        br
+        p #{orderShip.street}
+        p #{orderShip.city} #{orderShip.province} #{orderShip.postal_code}
+        p #{orderShip.country}
+        p #{orderShip.phone_num}
+        
+    section.confirm
+        h3 Card
+        p $#{total} - #{orderCard.card_num}
+
+    form(id="place-order" name="place-orde" action="/orders" method="post") 
+        input#send-restore(type="submit" value="Place Order")

@@ -251,6 +251,23 @@ section.checkout {
     #new-address-sect { display: none; }
 }
 
+section.confirm {
+    width: 20%;
+    margin: 1%;
+    padding: 2%;
+    display: block;
+    background-color: #dfdfdf;
+}
+
+form#place-order {
+    padding: 1%;
+    background-color: initial;
+    input { 
+        padding: 10px;
+        font-size: 1.8rem; 
+    }
+}
+
 section#report {
     table { 
         width: 80%;
