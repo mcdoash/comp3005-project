@@ -6,6 +6,8 @@ const createAccount = "INSERT INTO Account VALUES($1, $2, $3, $4)";
 
 const logIn = "SELECT COUNT(*) as success FROM Account WHERE Email = $1 AND Password = $2";
 
+const getInfo = "SELECT (Fname || ' ' || Lname) AS Name FROM Account WHERE Email = $1;";
+
 const newAddress = "INSERT INTO Address VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING ID";
 
 const newCard = "INSERT INTO Card VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING Card_id";
@@ -17,6 +19,7 @@ exports.checkAccount = (email, callback) => {
     });
 };
 
+//create a new account
 exports.newAccount = (data, callback) => {
     const values = [data.email, data.fname, data.lname, data.password];
     db.query(createAccount, values, (err, result) => {
@@ -30,6 +33,13 @@ exports.logIn = (email, password, callback) => {
         callback(err, parseInt(result.rows[0].success));
     });
 }
+
+//get account info
+exports.getInfo = (email, callback) => {
+    db.query(getInfo, [email], (err, result) => {
+        callback(err, result.rows[0]);
+    });
+};
 
 //create address
 exports.newAddress = (data, callback) => {

@@ -45,9 +45,11 @@ app.listen(3000);
 console.log("Server running on port 3000");
 
 
-app.get("/", getPopBooks, showIndex);
+//homepage
+app.get("/", getTopBooks, showIndex);
 
-function getPopBooks(req, res, next) {
+//get a list of the top selling books
+function getTopBooks(req, res, next) {
     book.getPopular((err, result) => {
         if(err) console.error(err.stack);
         res.books = result;
@@ -103,27 +105,45 @@ function showIndex(req, res) {
     });
 }
 
-//log in page
+
+//show log in page
 app.get("/login", (req, res) => {
     res.status(200).render("login", {session: req.session});
 });
 
 //log in attempt
-app.post("/login", (req, res) => {
+app.post("/login", tryLogIn, getUserInfo);
+
+function tryLogIn(req, res, next)  {
     account.logIn(req.body.email, req.body.password, (err, success) => {
         if(err) console.error(err.stack);
         if(success) {
             req.session.signedIn = true;
             req.session.user = { email: req.body.email };
-            res.statusCode = 200;
-            res.redirect("/");
-            return;
+            next();
         }
         else {
             res.status(401).send({error: "Invalid email or password."});
+            return;
         }
     });
-});
+}
+
+function getUserInfo(req, res, ) {
+    account.getInfo(req.body.email, (err, info) => {
+        if(err) {
+            console.error(err.stack);
+            res.status(500).send({error: "Error getting account info."});
+            return;
+        }
+        req.session.user.name = info.name;
+        
+        res.statusCode = 200;
+        res.redirect("/");
+        return;
+    });
+}
+
 
 app.get("/logout", (req, res) => {
     if(req.session.signedIn) {

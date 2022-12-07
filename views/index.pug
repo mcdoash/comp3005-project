@@ -2,7 +2,10 @@ extends layout
 
 block content
     #welcome
-        h1 Welcome to Look Inna Book
+        if session.signedIn
+            h1 Hi #{session.user.name}!
+        else
+            h1 Welcome to Look Inna Book
         h2 Our Top Books
     section#book-list.top
         each book in topBooks
