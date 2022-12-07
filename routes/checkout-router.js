@@ -1,12 +1,16 @@
 const express = require("express");
 let router = express.Router();
 const db = require("../db/order-queries");
+const bookDb = require("../db/book-queries");
 
 router.get("/", checkLoggedIn, getAccountData, showCheckout);
 
 function checkLoggedIn(req, res, next) {
     if(req.session.signedIn) next();
-    else return; //error
+    else {
+        res.sendStatus(401);
+        return;
+    }
 }
 
 //check account data
@@ -25,6 +29,7 @@ function showCheckout(req, res) {
     return;
 }
 
+//check auth
 router.get("/address", (req, res) => {
     res.status(200).render("checkout/address", {
         session: req.session
@@ -38,6 +43,7 @@ router.post("/address", (req, res) => {
 });
 
 
+//check auth
 router.get("/billing", (req, res) => {
     res.status(200).render("checkout/billing", {
         session: req.session
@@ -51,11 +57,58 @@ router.post("/billing", (req, res) => {
 });
 
 
-router.get("/confirm", (req, res) => {
-    console.log("ok :)");
-    /*res.status(200).render("checkout/address", {
+router.get("/confirm", checkLoggedIn, confirmStock, calcTotal, showConfirm);
+
+function confirmStock(req, res, next) {
+    const bookList = req.session.cart.books.map((book) => book.isbn); //quantity
+    if(!req.session.cart.errors) {
+        req.session.cart.errors = [];
+    }
+
+    bookDb.checkStock(bookList, (err, results) => {
+        if(err) console.error(err.stack);
+
+        results.forEach((book) => {
+            let i = req.session.cart.books.findIndex(item => item.isbn == book.isbn);
+            
+            //not enough stock
+            if(book.stock < req.session.cart.books[i].quantity) {
+                if(book.stock > 0) { //reduce quantity
+                    req.session.cart.total.quantity -= (req.session.cart.books[i].quantity - book.stock);
+                    req.session.cart.books[i].quantity = book.stock;
+
+                    req.session.cart.errors.push({
+                        isbn: req.session.cart.books[i].isbn,
+                        title: req.session.cart.books[i].title,
+                        error: "quantity changed"
+                    });
+                }
+                else { //remove from cart
+                    req.session.cart.errors.push({
+                        isbn: req.session.cart.books[i].isbn,
+                        title: req.session.cart.books[i].title,
+                        error: "out of stock"
+                    });
+                    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
+
+                    req.session.cart.books.splice(i, 1);
+                }
+            }
+        });
+        next();
+    });
+}
+
+
+
+function calcTotal(req, res, next) {
+    next();
+}
+
+function showConfirm(req, res) {
+    res.status(200).render("checkout/confirm", {
         session: req.session
-    });*/
-});
+    });
+}
 
 module.exports = router;
