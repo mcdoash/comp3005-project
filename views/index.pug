@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+    +script("cart")
+
 block content
     #welcome
         if session.signedIn
