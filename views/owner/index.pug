@@ -85,7 +85,7 @@ block content
                 input(type="text" id="name" name="name" maxlength="30" required)
             .form-sect
                 label(for="email") Email:
-                input(type="email" name="email" required maxlength="30")
+                input(type="email" name="email" required maxlength="30" pattern="(?!.*[.]{2}|[.])[a-zA-Z0-9!#$%&''*+\-\/=?^_`{|}~.]+@[a-zA-Z0-9\-]+.[a-zA-Z]+")
             br
             h3 Addresss
             .form-sect

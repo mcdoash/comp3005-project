@@ -7,7 +7,7 @@ block content
             h2 Log In
             #email
                 label(for="email") Email:
-                input(type="email" name="email" placeholder="email" required maxlength="30")
+                input(type="email" name="email" placeholder="email" required maxlength="30" pattern="(?!.*[.]{2}|[.])[a-zA-Z0-9!#$%&''*+\-\/=?^_`{|}~.]+@[a-zA-Z0-9\-]+.[a-zA-Z]+")
             #password
                 label(for="password") Password:
                 input(type="password" name="password" placeholder="password" required maxlength="30")
@@ -19,7 +19,7 @@ block content
             h2 Register
             #email
                 label(for="email") Email:
-                input(type="email" name="email" placeholder="email" required maxlength="30")
+                input(type="email" name="email" placeholder="email" required maxlength="30" pattern="(?!.*[.]{2}|[.])[a-zA-Z0-9!#$%&''*+\-\/=?^_`{|}~.]+@[a-zA-Z0-9\-]+.[a-zA-Z]+")
             #password
                 label(for="password") Password:
                 input(type="password" name="password" placeholder="password" required maxlength="30")
