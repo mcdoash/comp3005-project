@@ -30,11 +30,13 @@ const book = require("./db/book-queries");
 //routers
 let bookRouter = require("./routes/book-router");
 let accountRouter = require("./routes/account-router");
+let cartRouter = require("./routes/cart-router");
 let checkoutRouter = require("./routes/checkout-router");
 let orderRouter = require("./routes/order-router");
 let ownerRouter = require("./routes/owner-router");
 app.use("/books", bookRouter);
 app.use("/accounts", accountRouter);
+app.use("/cart", cartRouter);
 app.use("/checkout", checkoutRouter);
 app.use("/orders", orderRouter);
 app.use("/owner", ownerRouter);
@@ -161,74 +163,9 @@ app.get("/logout", (req, res) => {
 
 
 
-
-//show cart page
-app.get("/cart", (req, res) => {
-    res.status(200).render("cart", {
-        session: req.session
-    });
-});
-
-
-//add book to cart
-app.post("/cart", (req, res) => {
-    if (!req.session.cart) { //empty cart init
-        req.session.cart = {};
-        req.session.cart.books = [];
-        req.session.cart.total = {
-            price: 0,
-            quantity: 0
-        }
-    }
-    let inCart = false;
-
-    //check if book already in cart
-    req.session.cart.books.forEach((book) => {
-        if(book.isbn == req.body.isbn) {
-            book.quantity++;
-            inCart = true;
-        }
-    })
-    if(!inCart) {
-        req.body.quantity = 1;
-        req.session.cart.books.push(req.body);
-    } 
-
-    req.session.cart.total.price += req.body.price;
-    req.session.cart.total.quantity ++;
-    res.status(204).send();
-});
-
-//update quantity
-app.put("/cart/:isbn", (req, res) => {
-    let i = req.session.cart.books.findIndex(item => item.isbn == req.params.isbn);
-    
-    //update prices & totals
-    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
-    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
-    req.session.cart.total.price += req.session.cart.books[i].price * req.body.quantity;
-    req.session.cart.total.quantity += req.body.quantity;
-
-    req.session.cart.books[i].quantity = req.body.quantity;
-    res.status(204).send();
-    return;
-});
-
-//delete from cart
-app.delete("/cart/:isbn", (req, res) => {
-    let i = req.session.cart.books.findIndex(item => item.isbn == req.params.isbn);
-
-    //update prices & totals
-    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
-    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
-    req.session.cart.books.splice(i, 1);
-
-    res.status(204).send();
-    return;
-});
-
-
+//add new publisher
 app.post("/publishers", parseInput, checkPub, createPub);
+
 function parseInput(req, res, next) {
     req.pubData = Object.values(req.body);
 
