@@ -30,8 +30,9 @@ function newAccount(req, res) {
             console.error(err.stack);
             req.app.locals.sendError(req, res, 500, "Could not create account.");
             return;
-        } //log them in
-        res.sendStatus(201);
+        }
+        req.app.locals.logInUser(req, res, req.body.email);
+        return;
     });
 }
 

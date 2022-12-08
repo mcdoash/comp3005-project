@@ -61,11 +61,11 @@ function getTopBooks(req, res, next) {
 }
 
 function testLogIn(req, res, next) {
-    account.logIn("Mekhi51@gmail.com", "5W71FtXg0WNAbcl", (err, success) => {
+    account.logIn("Freeman25@yahoo.com", "e9iAMlXbbKCrPnd", (err, success) => {
         if(err) console.error(err.stack);
         if(success) {
             req.session.signedIn = true;
-            req.session.user = { email: "Mekhi51@gmail.com" };
+            req.session.user = { email: "Freeman25@yahoo.com" };
             req.session.cart = {
                 books: [
                   {
@@ -115,15 +115,14 @@ app.get("/login", (req, res) => {
 });
 
 //log in attempt
-app.post("/login", tryLogIn, getUserInfo);
+app.post("/login", tryLogIn);
 
 function tryLogIn(req, res, next)  {
     account.logIn(req.body.email, req.body.password, (err, success) => {
         if(err) console.error(err.stack);
         if(success) {
-            req.session.signedIn = true;
-            req.session.user = { email: req.body.email };
-            next();
+            app.locals.logInUser(req, res, req.body.email);
+            return;
         }
         else {
             req.app.locals.sendError(req, res, 401, "Invalid email or password.");
@@ -132,7 +131,10 @@ function tryLogIn(req, res, next)  {
     });
 }
 
-function getUserInfo(req, res, ) {
+app.locals.logInUser = ((req, res, user) => {
+    req.session.signedIn = true;
+    req.session.user = { email: req.body.email };
+
     account.getInfo(req.body.email, (err, info) => {
         if(err) {
             console.error(err.stack);
@@ -140,12 +142,12 @@ function getUserInfo(req, res, ) {
             return;
         }
         req.session.user.name = info.name;
-        
+
         res.statusCode = 200;
         res.redirect("/");
         return;
     });
-}
+});
 
 
 app.get("/logout", (req, res) => {
