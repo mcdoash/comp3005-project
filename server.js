@@ -263,7 +263,7 @@ function createPub(req, res) {
             }
             return;
         }
-        req.app.locals.sendSuccess(req, res, 21, "Publisher added successfully");
+        req.app.locals.sendSuccess(req, res, 201, "Publisher added successfully");
         return;
     });
 }
