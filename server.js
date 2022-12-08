@@ -47,6 +47,7 @@ console.log("Server running on port 3000");
 
 //homepage
 app.get("/", getTopBooks, showIndex);
+//app.get("/", testLogIn);
 
 //get a list of the top selling books
 function getTopBooks(req, res, next) {
@@ -197,6 +198,33 @@ app.post("/cart", (req, res) => {
     res.status(204).send();
 });
 
+//update quantity
+app.put("/cart/:isbn", (req, res) => {
+    let i = req.session.cart.books.findIndex(item => item.isbn == req.params.isbn);
+    
+    //update prices & totals
+    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
+    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
+    req.session.cart.total.price += req.session.cart.books[i].price * req.body.quantity;
+    req.session.cart.total.quantity += req.body.quantity;
+
+    req.session.cart.books[i].quantity = req.body.quantity;
+    res.status(204).send();
+    return;
+});
+
+//delete from cart
+app.delete("/cart/:isbn", (req, res) => {
+    let i = req.session.cart.books.findIndex(item => item.isbn == req.params.isbn);
+
+    //update prices & totals
+    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
+    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
+    req.session.cart.books.splice(i, 1);
+
+    res.status(204).send();
+    return;
+});
 
 
 app.post("/publishers", parseInput, checkPub, createPub);

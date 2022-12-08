@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+    +script("cart")
+
 block content
     section#cart
         h2 Cart
@@ -11,7 +14,9 @@ block content
                 .cart-item
                     h3  
                         a(href="/books/" + item.isbn) #{item.title}
-                    span $#{item.price.toFixed(2)} - #{item.quantity}x
+                    span.delete(onClick="removeFromCart('" + item.isbn + "')") &times;
+                    input(type="number" onInput="changeQuantity('" + item.isbn + "', this)" value=item.quantity min="1" max="1000" size="1")
+                    span $#{item.price.toFixed(2)}
 
             #total Total - $#{session.cart.total.price.toFixed(2)}
 
