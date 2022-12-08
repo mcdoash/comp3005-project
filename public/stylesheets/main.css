@@ -276,7 +276,7 @@ section#cart .cart-item h3, section#cart .cart-item span, section#cart .cart-ite
 }
 
 section#cart .cart-item h3 {
-  width: 75%;
+  max-width: 75%;
 }
 
 section#cart .cart-item span, section#cart .cart-item input {
@@ -427,7 +427,7 @@ section#order-books .cart-item h3, section#order-books .cart-item span {
 }
 
 section#order-books .cart-item h3 {
-  width: 80%;
+  max-width: 80%;
 }
 
 section#order-books .cart-item span {
@@ -476,5 +476,15 @@ section#order-list .order span {
 
 section#order-list .order.complete {
   background-color: #dfdfdf;
+}
+
+section#error, section#success {
+  width: 100%;
+}
+
+section#error h1, section#error h2, section#success h1, section#success h2 {
+  width: 100%;
+  padding: 40px 20px 10px;
+  text-align: center;
 }
 /*# sourceMappingURL=main.css.map */

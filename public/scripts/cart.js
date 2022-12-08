@@ -8,10 +8,14 @@ function addToCart(isbn, title, price) {
             if(this.status == 204) {
                 alert("Book added successfully");
             }
+            else {
+                alert("Error adding book");
+            }
 		}
     }
     req.open("POST", "/cart");
-	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send(JSON.stringify(data));
 }
 

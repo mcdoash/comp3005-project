@@ -9,7 +9,11 @@ router.get("/:order", showOrder);
 //create the order based on cart
 function createOrder(req, res, next) { 
     db.createOrder(req.session.user.email, req.session.cart, (err, num) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Order could not be created");
+            return;
+        }
         res.orderNum = num;
         next();
     });
@@ -20,7 +24,7 @@ function createSales(req, res) {
     db.createSales(res.orderNum, req.session.cart.books, (err) => {
         if(err) {
             console.error(err.stack);
-            res.status(500).send({error: "Problem creating order"});
+            req.app.locals.sendError(req, res, 500, "Problem creating order");
             return;
         }
         //redirect to new order page
@@ -35,7 +39,7 @@ router.param("order" , (req, res, next, num) => {
     db.getOrder(num, (err, order) => {
         if(err) console.error(err.stack);
         if(!order.data) {
-            res.status(404).send({error: "Order  " + num + " does not exist"});
+            req.app.locals.sendError(req, res, 404, "Order  " + num + " does not exist");
             return;
         }
         res.order = order;
@@ -58,7 +62,11 @@ function getUserOrders(req, res, next) {
     if(!req.session.signedIn) next();
     else {
         db.getUserOrders(req.session.user.email, (err, orders) => {
-            if(err) console.error(err.stack);
+            if(err) {
+                console.error(err.stack);
+                req.app.locals.sendError(req, res, 500, "Error getting orders");
+                return;
+            }
             req.session.orders = orders;
             next();
         });

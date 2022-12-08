@@ -8,7 +8,7 @@ router.get("/", checkLoggedIn, getAccountData, showCheckout);
 function checkLoggedIn(req, res, next) {
     if(req.session.signedIn) next();
     else {
-        res.sendStatus(401);
+        req.app.locals.sendError(req, res, 401, "Must be logged in to access page");
         return;
     }
 }
@@ -16,7 +16,11 @@ function checkLoggedIn(req, res, next) {
 //check account data
 function getAccountData(req, res, next) {
     db.getAccountData(req.session.user.email, (err, results) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error retrieving account data");
+            return;
+        }
         req.session.user.cards = results.cards;
         req.session.user.addresses = results.addresses;
         next();
@@ -57,7 +61,7 @@ router.post("/billing", (req, res) => {
 });
 
 
-router.get("/confirm", checkLoggedIn, confirmStock, calcTotal, showConfirm);
+router.get("/confirm", checkLoggedIn, confirmStock, showConfirm);
 
 function confirmStock(req, res, next) {
     const bookList = req.session.cart.books.map((book) => book.isbn); //quantity
@@ -66,7 +70,11 @@ function confirmStock(req, res, next) {
     }
 
     bookDb.checkStock(bookList, (err, results) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error checking book stock");
+            return;
+        }
 
         results.forEach((book) => {
             let i = req.session.cart.books.findIndex(item => item.isbn == book.isbn);
@@ -107,11 +115,6 @@ function confirmStock(req, res, next) {
     });
 }
 
-
-
-function calcTotal(req, res, next) {
-    next();
-}
 
 function showConfirm(req, res) {
     res.status(200).render("checkout/confirm", {

@@ -10,9 +10,13 @@ function checkAccount(req, res, next) {
     const email = req.body.email;
 
     db.checkAccount(email, (err, exists) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error retrieving account data");
+            return;
+        }
         if(exists) {
-            res.status(409).send({error: "Account with email " + email + " already exists."}); //fix response
+            req.app.locals.sendError(req, res, 409, "Account with email " + email + " already exists.");
             return;
         }
         next();
@@ -24,7 +28,7 @@ function newAccount(req, res) {
     db.newAccount(req.body, (err) => {
         if(err) {
             console.error(err.stack);
-            res.status(500).send({error: "Could not create account."}); //fix response
+            req.app.locals.sendError(req, res, 500, "Could not create account.");
             return;
         } //log them in
         res.sendStatus(201);
@@ -36,7 +40,7 @@ function newAccount(req, res) {
 function checkSignedIn(req, res, next) {
     if(req.session.signedIn) next();
     else {
-        res.status(401).send();
+        req.app.locals.sendError(req, res, 401, "Must be logged in to access resource");
         return;
     }
 }
@@ -54,7 +58,7 @@ function newAddress(req, res) {
     db.newAddress(Object.values(data), (err, id) => {
         if(err) {
             console.error(err.stack);
-            res.sendStatus(400);
+            req.app.locals.sendError(req, res, 500, "Could not create new address");
             return;
         } 
         res.status(201).send({id: id});
@@ -74,7 +78,7 @@ function newCard(req, res) {
     db.newCard(Object.values(data), (err, id) => {
         if(err) {
             console.error(err.stack);
-            res.sendStatus(400);
+            req.app.locals.sendError(req, res, 500, "Could not create new card");
             return;
         } 
         res.status(201).send({id: id});

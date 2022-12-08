@@ -14,7 +14,8 @@ function removeBook() {
 		}
     }
     req.open("DELETE", "/books/");
-	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
     req.send(JSON.stringify({isbn: isbn}));
 }
 
@@ -36,5 +37,6 @@ function restoreBook() {
     }
     req.open("PUT", "/books/");
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
     req.send(JSON.stringify({isbn: isbn}));
 }

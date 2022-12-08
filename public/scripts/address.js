@@ -33,10 +33,14 @@ document.getElementById("new-address").addEventListener("click", () => {
             if(this.status == 401) {
                 alert("Not logged in");
             }
+            if(this.status == 500) {
+                alert("Error creating address");
+            }
 		}
     }
     req.open("POST", "/accounts/address");
-	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send(JSON.stringify(data));
 });
 
@@ -53,5 +57,6 @@ function setAddress(id) {
     }
     req.open("POST", "/checkout/address");
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send(JSON.stringify({address: id}));
 }

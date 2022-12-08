@@ -77,10 +77,14 @@ function sendNewCard() {
             if(this.status == 401) {
                 alert("Not logged in");
             }
+            if(this.status == 500) {
+                alert("Error creating card");
+            }
 		}
     }
     req.open("POST", "/accounts/cards");
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send(JSON.stringify(data));
 }
 
@@ -105,10 +109,14 @@ function addNewAddress() {
             if(this.status == 401) {
                 alert("Not logged in");
             }
+            if(this.status == 500) {
+                alert("Error creating address");
+            }
 		}
     }
     req.open("POST", "/accounts/address");
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send(JSON.stringify(data));
 }
 
@@ -125,5 +133,6 @@ function setCard(id) {
     }
     req.open("POST", "/checkout/billing");
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send(JSON.stringify({card: id}));
 }

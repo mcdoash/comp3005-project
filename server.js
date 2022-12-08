@@ -124,7 +124,7 @@ function tryLogIn(req, res, next)  {
             next();
         }
         else {
-            res.status(401).send({error: "Invalid email or password."});
+            req.app.locals.sendError(req, res, 401, "Invalid email or password.");
             return;
         }
     });
@@ -134,7 +134,7 @@ function getUserInfo(req, res, ) {
     account.getInfo(req.body.email, (err, info) => {
         if(err) {
             console.error(err.stack);
-            res.status(500).send({error: "Error getting account info."});
+            req.app.locals.sendError(req, res, 500, "Error getting account info.");
             return;
         }
         req.session.user.name = info.name;
@@ -154,7 +154,8 @@ app.get("/logout", (req, res) => {
         return;
     }
     else { //not signed in
-        res.sendStatus(401);//fix to page
+        req.app.locals.sendError(req, res, 401, "Must be logged in to access page");
+        return;
     }
 });
 
@@ -241,7 +242,7 @@ function checkPub(req, res, next) {
         if(err) console.error(err.stack);
         if(exists == 0) next();
         else {
-            res.status(400).send({error: "Publisher '" + req.body.name + "' already exists"});
+            req.app.locals.sendError(req, res, 400, "Publisher '" + req.body.name + "' already exists");
             return;
         }
     });
@@ -251,15 +252,18 @@ function createPub(req, res) {
     publisher.addPub(req.pubData, (err) => {
         if(err) {
             if(err.code == "23505") { //dup email
-                res.status(401).send({error: "Duplicate email: " + err.detail});
+                req.app.locals.sendError(req, res, 401, "Duplicate email: " + err.detail);
+            }
+            else if(err.code == "23514") { //bad email format
+                req.app.locals.sendError(req, res, 401, "Invalid email format");
             }
             else {
                 console.error(err.stack);
-                res.status(500).send({error: "Publisher could not be created"});
+                req.app.locals.sendError(req, res, 500, "Publisher could not be created");
             }
             return;
         }
-        res.status(201).send({success: "Publisher added successfully"});
+        req.app.locals.sendSuccess(req, res, 21, "Publisher added successfully");
         return;
     });
 }
@@ -301,4 +305,37 @@ app.get("/authors", (req, res) => {
         if(err) console.error(err.stack);
         res.status(200).send({results: results});
     });
+});
+
+
+app.locals.sendError = ((req, res, code, error) => {
+    if(req.accepts("html")) {
+        res.status(code).render("error", {
+          session: req.session, 
+          code: code, 
+          error: error
+        });
+      }
+      else if(req.accepts("json")) {
+        res.status(code).send({error: error});
+      }
+});
+
+app.locals.sendSuccess = ((req, res, code, message) => {
+    if(req.accepts("html")) {
+        res.status(code).render("success", {
+          session: req.session, 
+          code: code, 
+          message: message
+        });
+      }
+      else if(req.accepts("json")) {
+        res.status(code).send({success: message});
+      }
+});
+
+//404 for all other requests
+app.use("*", (req, res) => {
+    req.app.locals.sendError(req, res, 404, "Requested resource does not exist");
+    return;
 });
