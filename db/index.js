@@ -1,12 +1,9 @@
+//db connection vars
+const dbVars = require("./connection.json"); 
+
 //configure db connection
 const { Pool } = require("pg");
-const pool = new Pool({
-    host: "localhost",
-    port: 5432,
-    user: "postgres",
-    password: "testPassword",
-    database: "Project"
-});
+const pool = new Pool(dbVars);
 
 pool.on("error", (err, client) => {
     console.error("Pool error", err);
