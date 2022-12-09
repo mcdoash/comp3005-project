@@ -1,11 +1,25 @@
+//close autofill
+let canClose = true;
+const sects = document.getElementsByClassName("autofill");
+Array.from(sects).forEach((sect) => sect.addEventListener("mouseleave", () => {
+    canClose = true;
+}));
+Array.from(sects).forEach((sect) => sect.addEventListener("mouseover", () => {
+    canClose = false; //don't close if currently selecting an option
+}));
+
+
 //publisher autofill
 document.getElementById("publisher").addEventListener("input", pubAutofill);
-document.getElementById("publisher").addEventListener("focusout", closeOpts);
-
+document.getElementById("publisher").addEventListener("focus", function() {
+    if(this.value == "") pubAutofill();
+});
+document.addEventListener("focusout", closeOpts);
 
 //get names that match current publisher input
 function pubAutofill() {
     let text = this.value;
+    if(!text) text = "";
 
     let req = new XMLHttpRequest();
 	req.onreadystatechange = function() {
@@ -48,6 +62,7 @@ function setPubName(name) {
 
 //author autofill
 document.getElementById("authors").addEventListener("input", authorAutofill);
+document.getElementById("authors").addEventListener("focus", authorAutofill);
 document.getElementById("authors").addEventListener("focusout", closeOpts);
 
 //get names that match current author input
@@ -101,6 +116,7 @@ function setAuthName(name) {
 
 //genre autofill
 document.getElementById("genres").addEventListener("input", genreAutofill);
+document.getElementById("genres").addEventListener("focus", genreAutofill);
 document.getElementById("genres").addEventListener("focusout", closeOpts);
 
 function genreAutofill() {
@@ -131,6 +147,7 @@ function showGenreNames(names) {
         let newName = document.createElement("div"); 
         newName.innerText = name;
         newName.setAttribute("onClick", 'setGenreName("' + name + '")');
+        newName.className = "opt";
         list.append(newName);
     });
 }
@@ -150,7 +167,9 @@ function setGenreName(name) {
 
 //clear all name lists
 function closeOpts() {
-    document.getElementById("pub-names").innerHTML = "";
-    document.getElementById("auth-names").innerHTML = "";
-    document.getElementById("genre-names").innerHTML = "";
+    if(canClose) {
+        document.getElementById("pub-names").innerHTML = "";
+        document.getElementById("auth-names").innerHTML = "";
+        document.getElementById("genre-names").innerHTML = "";
+    }
 }
