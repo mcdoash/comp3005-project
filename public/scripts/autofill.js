@@ -1,5 +1,7 @@
 //publisher autofill
 document.getElementById("publisher").addEventListener("input", pubAutofill);
+document.getElementById("publisher").addEventListener("focusout", closeOpts);
+
 
 //get names that match current publisher input
 function pubAutofill() {
@@ -18,7 +20,8 @@ function pubAutofill() {
         }
 	}
 	req.open("GET", "/publishers?name=" + text);
-	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send();
 }
 
@@ -45,6 +48,7 @@ function setPubName(name) {
 
 //author autofill
 document.getElementById("authors").addEventListener("input", authorAutofill);
+document.getElementById("authors").addEventListener("focusout", closeOpts);
 
 //get names that match current author input
 function authorAutofill() {
@@ -63,6 +67,7 @@ function authorAutofill() {
 	}
 	req.open("GET", "/authors?name=" + text);
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send();
 }
 
@@ -70,12 +75,14 @@ function showAuthNames(names) {
     const list = document.getElementById("auth-names");
     list.innerHTML = ""; //clear
 
-    names.forEach(name => {
-        let newName = document.createElement("div"); 
-        newName.innerText = name;
-        newName.setAttribute("onClick", 'setAuthName("' + name + '")');
-        list.append(newName);
-    });
+    if(names != null) {
+        names.forEach(name => {
+            let newName = document.createElement("div"); 
+            newName.innerText = name;
+            newName.setAttribute("onClick", 'setAuthName("' + name + '")');
+            list.append(newName);
+        });
+    }
 }
 
 //set textbox to selected name
@@ -94,6 +101,7 @@ function setAuthName(name) {
 
 //genre autofill
 document.getElementById("genres").addEventListener("input", genreAutofill);
+document.getElementById("genres").addEventListener("focusout", closeOpts);
 
 function genreAutofill() {
     //get last item
@@ -111,6 +119,7 @@ function genreAutofill() {
 	}
 	req.open("GET", "/genres?name=" + text);
 	req.setRequestHeader("Content-Type", "application/json");
+    req.setRequestHeader("Accept", "application/json");
 	req.send();
 }
 
@@ -136,4 +145,12 @@ function setGenreName(name) {
 
     document.getElementById("genres").value = values;
     document.getElementById("genre-names").innerHTML = ""; //clear
+}
+
+
+//clear all name lists
+function closeOpts() {
+    document.getElementById("pub-names").innerHTML = "";
+    document.getElementById("auth-names").innerHTML = "";
+    document.getElementById("genre-names").innerHTML = "";
 }
