@@ -5,15 +5,15 @@ block scripts
 
 block content
     section.checkout
-        form(name="address-form")
+        form#set-old-address(name="address-form")
             h2 Choose Address
             if session.user.addresses
                 each address in session.user.addresses
                     .form-sect
-                        input(type="radio" id="" + address.id + "" value="" + address.id + "" name="address") 
+                        input(type="radio" id="" + address.id + "" value="" + address.id + "" name="address" required) 
                         label(for="" + address.id + "") #{address.fname} #{address.lname} - #{address.street}
 
-                button#set-address(type="button") Next
+                input#set-address(type="submit" value="Next")
             else
                 p No current addresses. Please add one below.
 
@@ -45,4 +45,4 @@ block content
                 label(for="phone_num") Phone number:
                 input(type="phone" name="phone_num" placeholder="123-456-7890" required pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}")
 
-            button#new-address(type="button") Next
+            input#new-address(type="submit" value="Next")

@@ -2,18 +2,21 @@ let addressId;
 let data = {};
 
 function addressSelect(id) {
+    const addressInputs = document.getElementsByClassName("address");
     if(id == "new") {
-        document.getElementById("new-address-sect").style.display = "block";
+        Array.from(addressInputs).forEach((input) => input.setAttribute("required", ""));
         addressId = null;
+        document.getElementById("new-address-sect").style.display = "block";
     }
     else {
-        document.getElementById("new-address-sect").style.display = "none";
+        Array.from(addressInputs).forEach((input) => input.removeAttribute("required"));
         addressId = id;
+        document.getElementById("new-address-sect").style.display = "none";
     }
 }
 
 //checkout card select
-document.getElementById("set-card").addEventListener("click", () => {
+document.getElementById("set-card").addEventListener("submit", () => {
     event.preventDefault();
     let card = document.forms["billing-form"]["card"].value;
 
@@ -25,11 +28,13 @@ document.getElementById("set-card").addEventListener("click", () => {
 });
 
 //checkout add new address
-document.getElementById("new-card").addEventListener("click", () => {
+document.getElementById("new-card-form").addEventListener("submit", () => {
     event.preventDefault();
+    console.log("hmm" + addressId);
+
+
     const form = document.getElementById("new-card-form");
     const formData = new FormData(form);
-
     formData.forEach((val, field) => data[field] = val);
     
     let expiryDate = data.expiry + "-01";
@@ -60,8 +65,13 @@ document.getElementById("new-card").addEventListener("click", () => {
 });
 
 function sendNewCard() {
-    data.address = addressId;
-    //console.log(JSON.stringify(data));
+    const cardData = {
+        card_num: data.card_num,
+        name: data.name,
+        expiry: data.expiry,
+        cvv: data.cvv,
+        address: addressId
+    }
 
     let req = new XMLHttpRequest();
 	req.onreadystatechange = function() {
@@ -85,15 +95,22 @@ function sendNewCard() {
     req.open("POST", "/accounts/cards");
 	req.setRequestHeader("Content-Type", "application/json");
     req.setRequestHeader("Accept", "application/json");
-	req.send(JSON.stringify(data));
+	req.send(JSON.stringify(cardData));
 }
 
 function addNewAddress() {
-    const form = document.getElementById("new-address-sect");
+    const form = document.getElementById("new-card-form");
     const formData = new FormData(form);
-
-    let data = {};
-    formData.forEach((val, field) => data[field] = val);
+    let data = {
+        fname: formData.get("fname"),
+        lname: formData.get("lname"),
+        street: formData.get("street"),
+        city: formData.get("city"),
+        province: formData.get("province"),
+        postal_code: formData.get("postal_code"),
+        country: formData.get("country"),
+        phone_num: formData.get("phone_num")
+    };
 
     let req = new XMLHttpRequest();
 	req.onreadystatechange = function() {

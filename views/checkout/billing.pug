@@ -5,7 +5,7 @@ block scripts
 
 block content
     section.checkout
-        form(name="billing-form")
+        form#set-card(name="billing-form")
             h2 Select Card
             if session.user.cards
                 each card in session.user.cards
@@ -13,7 +13,7 @@ block content
                         input(type="radio" id="'card-" + card.card_id + "'" value="" + card.card_id + "" name="card") 
                         label(for="'card-" + card.card_id + "'") #{card.name} - #{card.card_num}
 
-                button#set-card(type="button") Next
+                input(type="submit" value="Next")
             else
                 p No current cards. Please add one below.
 
@@ -45,31 +45,31 @@ block content
                 input(type="radio" id="new" value="new" name="address" required onchange="addressSelect('new')") 
                 label(for="new") New Address
             
-        form#new-address-sect(name="new-address-form")
-            h3 Add new addresss
-            .form-sect
-                label(for="fname") First name:
-                input(type="text" name="fname" placeholder="First Name" required maxlength="15")
-            .form-sect
-                label(for="lname") Last name:
-                input(type="text" name="lname" placeholder="Last name" required maxlength="20")
-            .form-sect
-                label(for="street") Street:
-                input(type="text" name="street" placeholder="Street name" required maxlength="30")
-            .form-sect
-                label(for="city") City:
-                input(type="text" name="city" placeholder="City name" required maxlength="25")
-            .form-sect
-                label(for="province") Province Code:
-                input(type="text" name="province" placeholder="Prov code" required maxlength="2")
-            .form-sect
-                label(for="postal_code") Postal/Zip Code:
-                input(type="text" name="postal_code" placeholder="Postal code" required maxlength="10")
-            .form-sect
-                label(for="country") Country:
-                input(type="text" name="country" placeholder="Country" required maxlength="20")
-            .form-sect
-                label(for="phone_num") Phone number:
-                input(type="phone" name="phone_num" placeholder="123-456-7890" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}")
+            #new-address-sect(name="new-address-form")
+                h3 Add new addresss
+                .form-sect
+                    label(for="fname") First name:
+                    input.address(type="text" name="fname" placeholder="First Name" maxlength="15")
+                .form-sect
+                    label(for="lname") Last name:
+                    input.address(type="text" name="lname" placeholder="Last name" maxlength="20")
+                .form-sect
+                    label(for="street") Street:
+                    input.address(type="text" name="street" placeholder="Street name" maxlength="30")
+                .form-sect
+                    label(for="city") City:
+                    input.address(type="text" name="city" placeholder="City name" maxlength="25")
+                .form-sect
+                    label(for="province") Province Code:
+                    input.address(type="text" name="province" placeholder="Prov code" maxlength="2")
+                .form-sect
+                    label(for="postal_code") Postal/Zip Code:
+                    input.address(type="text" name="postal_code" placeholder="Postal code" maxlength="10")
+                .form-sect
+                    label(for="country") Country:
+                    input.address(type="text" name="country" placeholder="Country" maxlength="20")
+                .form-sect
+                    label(for="phone_num") Phone number:
+                    input.address(type="phone" name="phone_num" placeholder="123-456-7890" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}")
 
-        button#new-card(type="button") Next
+            input#new-card(type="submit" value="Next")

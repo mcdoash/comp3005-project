@@ -61,7 +61,7 @@ router.post("/billing", (req, res) => {
 });
 
 
-router.get("/confirm", checkLoggedIn, confirmStock, showConfirm);
+router.get("/confirm", checkLoggedIn, getAccountData, confirmStock, showConfirm);
 
 function confirmStock(req, res, next) {
     const bookList = req.session.cart.books.map((book) => book.isbn); //quantity

@@ -1,5 +1,5 @@
 //checkout addresss select
-document.getElementById("set-address").addEventListener("click", () => {
+document.getElementById("set-old-address").addEventListener("submit", () => {
     event.preventDefault();
     let address = document.forms["address-form"]["address"].value;
 
@@ -11,7 +11,7 @@ document.getElementById("set-address").addEventListener("click", () => {
 });
 
 //checkout add new address
-document.getElementById("new-address").addEventListener("click", () => {
+document.getElementById("set-new-add").addEventListener("submit", () => {
     event.preventDefault();
     const form = document.getElementById("set-new-add");
     const formData = new FormData(form);
