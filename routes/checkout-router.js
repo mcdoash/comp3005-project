@@ -33,12 +33,15 @@ function showCheckout(req, res) {
     return;
 }
 
-//check auth
-router.get("/address", (req, res) => {
+
+//set address stage
+router.get("/address", checkLoggedIn, sendAddress);
+
+function sendAddress(req, res) {
     res.status(200).render("checkout/address", {
         session: req.session
     });
-});
+}
 
 router.post("/address", (req, res) => {
     req.session.cart.address = req.body.address;
@@ -47,12 +50,19 @@ router.post("/address", (req, res) => {
 });
 
 
-//check auth
-router.get("/billing", (req, res) => {
+//set card stage
+router.get("/billing", checkLoggedIn, sendCard);
+
+function sendCard(req, res) {
+    if(!req.session.cart.address) { //must set address first
+        res.statusCode = 401;
+        res.redirect("/checkout");
+        return;
+    }
     res.status(200).render("checkout/billing", {
         session: req.session
     });
-});
+}
 
 router.post("/billing", (req, res) => {
     req.session.cart.card = req.body.card;
