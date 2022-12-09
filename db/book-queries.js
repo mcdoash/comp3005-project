@@ -20,9 +20,12 @@ const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEF
 
 const checkBook = "SELECT COUNT(*) AS Exists FROM Book WHERE ISBN = $1;"
 
+const getStock = "SELECT Stock FROM Book WHERE ISBN = $1";
+
 const removeBook = "UPDATE Book SET Selling = FALSE WHERE Book.ISBN = $1;";
 
 const restoreBook = "UPDATE Book SET Selling = TRUE WHERE Book.ISBN = $1;";
+    
 
 
 //create a new book, return isbn
@@ -122,11 +125,28 @@ function getParams(params) {
 }
 
 
-//return stock of given books
+//return the stock of one book
+exports.getStock = (isbn, callback) => {
+    db.query(getStock, [isbn], (err, result) => {
+        if(err) callback(err);
+        else callback(err, result.rows[0].stock);
+    });
+}
+
+//return stock of a list of books
 exports.checkStock = (books, callback) => {
     books = "'" + books.join("','") + "'";
-    //const query = "SELECT ISBN, Stock > 0 AS inStock FROM Book WHERE ISBN IN (" + books + ");";
     const query = "SELECT ISBN, Stock FROM Book WHERE ISBN IN (" + books + ");";
+    
+    db.query(query, (err, result) => {
+        callback(err, result.rows);
+    });
+}
+
+//get current book data (price & stock)
+exports.getCurrent = (books, callback) => {
+    books = "'" + books.join("','") + "'";
+    const query = "SELECT ISBN, Price, Stock FROM Book WHERE ISBN IN (" + books + ");";
     
     db.query(query, (err, result) => {
         callback(err, result.rows);

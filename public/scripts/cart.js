@@ -8,6 +8,9 @@ function addToCart(isbn, title, price) {
             if(this.status == 204) {
                 alert("Book added successfully");
             }
+            else if(this.status == 400) {
+                alert(JSON.parse(this.responseText).error);
+            }
             else {
                 alert("Error adding book");
             }
@@ -36,8 +39,15 @@ function changeQuantity(isbn, input) {
     
     let req = new XMLHttpRequest();
     req.onreadystatechange = function() {
-        if(this.readyState == 4 && this.status == 204) {
-            window.location.reload();
+        if(this.readyState == 4) { 
+            if(this.status == 204) {
+                window.location.reload();
+            }
+            else if(this.status == 400) {
+                alert(JSON.parse(this.responseText).error);
+                input.value = JSON.parse(this.responseText).max;
+                window.location.reload();
+            }
         }
     }
     req.open("PUT", "/cart/" + isbn);

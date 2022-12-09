@@ -5,17 +5,25 @@ block scripts
 
 block content
     section#cart
-        h2 Cart
+        h1 Cart
 
         if !session.cart
             p Nothing in cart.
         else
+            if session.cart.errors.length > 0
+                h3 Updates:
+                ul
+                    each item in session.cart.errors
+                        li  
+                            a(href="/books/" + item.isbn) #{item.title}
+                            |  #{item.error}
+
             each item in session.cart.books
                 .cart-item
                     h3  
                         a(href="/books/" + item.isbn) #{item.title}
                     span.delete(onClick="removeFromCart('" + item.isbn + "')") &times;
-                    input(type="number" onchange="changeQuantity('" + item.isbn + "', this)" value=item.quantity min="1" max="1000" size="1")
+                    input(type="number" onchange="changeQuantity('" + item.isbn + "', this)" value=item.quantity min="1" max="1000" size="1" autocomplete="off")
                     span $#{item.price.toFixed(2)}
 
             #total Total - $#{session.cart.total.price.toFixed(2)}
