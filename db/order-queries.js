@@ -29,7 +29,7 @@ exports.createOrder = (user, cart, callback) => {
 
     db.query(createOrder, values, (err, result) => {
         if(err) callback(err);
-        callback(err, result.rows[0].number);
+        else callback(err, result.rows[0].number);
     });
 }
 

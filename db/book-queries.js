@@ -29,7 +29,7 @@ const restoreBook = "UPDATE Book SET Selling = TRUE WHERE Book.ISBN = $1;";
 exports.addBook = (data, callback) => {
     db.query(newBook, data, (err, result) => {
         if(err) callback(err);
-        callback(err, result.rows[0].isbn);
+        else callback(err, result.rows[0].isbn);
     });
 }
 
@@ -71,7 +71,8 @@ exports.getPopular = (callback) => {
 //check to see if a book with given isbn exists
 exports.checkBook = (isbn, callback) => {
     db.query(checkBook, [isbn], (err, result) => {
-        callback(err, result.rows[0].exists);
+        if(err) callback(err);
+        else callback(err, result.rows[0].exists);
     });
 }
 
@@ -79,7 +80,7 @@ exports.checkBook = (isbn, callback) => {
 exports.getSpecific = (isbn, callback) => {
     db.query(getSpecficBook, [isbn], (err, result) => {
         if(err) callback(err);
-        callback(err, result.rows[0]);
+        else callback(err, result.rows[0]);
     });
 }
 
@@ -144,7 +145,8 @@ exports.getAuthorMatch = (name, callback) => {
     const authorMatch = "SELECT ARRAY_AGG(DISTINCT Author) Names FROM Authored WHERE Author ~* '\\m(" + name + ")';";
 
     db.query(authorMatch, (err, result) => {
-        callback(err, result.rows[0].names);
+        if(err) callback(err);
+        else callback(err, result.rows[0].names);
     });
 }
 //get all matching genre names
@@ -152,7 +154,8 @@ exports.getGenreMatch = (name, callback) => {
     const genreMatch = "SELECT ARRAY_AGG(DISTINCT Name) Names FROM Genre WHERE Name ~* '\\m(" + name + ")';";
 
     db.query(genreMatch, (err, result) => {
-        callback(err, result.rows[0].names);
+        if(err) callback(err);
+        else callback(err, result.rows[0].names);
     });
 }
 

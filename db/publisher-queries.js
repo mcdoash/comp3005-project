@@ -17,13 +17,15 @@ exports.getPubMatch = (name, callback) => {
     const pubMatch = "SELECT ARRAY_AGG(Name) Names FROM Publisher WHERE Name ~* '\\m(" + name + ")'";
 
     db.query(pubMatch, (err, result) => {
-        callback(err, result.rows[0].names);
+        if(err) callback(err);
+        else callback(err, result.rows[0].names);
     });
 }
 
 //check if a publisher with a given name exists
 exports.checkPub = (name, callback) => {
     db.query(checkPub, [name], (err, result) => {
-        callback(err, result.rows[0].exists);
+        if(err) callback(err);
+        else callback(err, result.rows[0].exists);
     });
 }

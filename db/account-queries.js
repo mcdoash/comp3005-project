@@ -15,14 +15,15 @@ const newCard = "INSERT INTO Card VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURN
 //return t/f if account with given email exists
 exports.checkAccount = (email, callback) => {
     db.query(accountExists, [email], (err, result) => {
-        callback(err, parseInt(result.rows[0].exists));
+        if(err) callback(err);
+        else callback(err, parseInt(result.rows[0].exists));
     });
 };
 
 //create a new account
 exports.newAccount = (data, callback) => {
     const values = [data.email, data.fname, data.lname, data.password];
-    db.query(createAccount, values, (err, result) => {
+    db.query(createAccount, values, (err) => {
         callback(err);
     });
 }
@@ -30,27 +31,31 @@ exports.newAccount = (data, callback) => {
 //return if account with email and password exists
 exports.logIn = (email, password, callback) => {
     db.query(logIn, [email, password], (err, result) => {
-        callback(err, parseInt(result.rows[0].success));
+        if(err) callback(err);
+        else callback(err, parseInt(result.rows[0].success));
     });
 }
 
 //get account info
 exports.getInfo = (email, callback) => {
     db.query(getInfo, [email], (err, result) => {
-        callback(err, result.rows[0]);
+        if(err) callback(err);
+        else callback(err, result.rows[0]);
     });
 };
 
 //create address
 exports.newAddress = (data, callback) => {
     db.query(newAddress, data, (err, result) => {
-        callback(err, result.rows[0].id);
+        if(err) callback(err);
+        else callback(err, result.rows[0].id);
     });
 }
 
 //create card
 exports.newCard = (data, callback) => {
     db.query(newCard, data, (err, result) => {
-        callback(err, result.rows[0].id);
+        if(err) callback(err);
+        else callback(err, result.rows[0].card_id);
     });
 }
