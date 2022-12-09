@@ -15,7 +15,7 @@ block content
                     h3  
                         a(href="/books/" + item.isbn) #{item.title}
                     span.delete(onClick="removeFromCart('" + item.isbn + "')") &times;
-                    input(type="number" onInput="changeQuantity('" + item.isbn + "', this)" value=item.quantity min="1" max="1000" size="1")
+                    input(type="number" onchange="changeQuantity('" + item.isbn + "', this)" value=item.quantity min="1" max="1000" size="1")
                     span $#{item.price.toFixed(2)}
 
             #total Total - $#{session.cart.total.price.toFixed(2)}
