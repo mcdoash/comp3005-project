@@ -27,6 +27,7 @@ function createSales(req, res) {
             req.app.locals.sendError(req, res, 500, "Problem creating order");
             return;
         }
+        req.session.cart = null; //clear cart
         //redirect to new order page
         res.statusCode = 204;
         res.redirect("/orders/" + res.orderNum);
