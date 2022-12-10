@@ -12,11 +12,22 @@ block content
                     th Book
                 else
                     th Author
-                th Total sales
-                th Total revenue
-                th Total profit
+                th Sales
+                th Revenue
+                th Profit
                 th Expenditure
                 
+            - const totalSales = report.results.reduce((acc, row) => acc + parseInt(row.total_sales), 0);
+            - const totalRevenue = report.results.reduce((acc, row) => acc + parseInt(row.total_revenue), 0);
+            - const totalProfit = report.results.reduce((acc, row) => acc + parseInt(row.total_profit), 0);
+            - const totalLost = report.results.reduce((acc, row) => acc + parseInt(row.profit_lost), 0);
+            tr#totals
+                td Total
+                td #{totalSales}
+                td $#{totalRevenue.toFixed(2)}
+                td $#{totalProfit.toFixed(2)}
+                td $#{totalLost.toFixed(2)}
+
             each row in report.results
                 tr
                     if report.type == "genre"
@@ -27,8 +38,8 @@ block content
                     else
                         td #{row.author}
                     td #{row.total_sales}
-                    td #{parseInt(row.total_revenue).toFixed(2)}
-                    td #{parseInt(row.total_profit).toFixed(2)}
-                    td #{parseInt(row.profit_lost).toFixed(2)}
+                    td $#{parseInt(row.total_revenue).toFixed(2)}
+                    td $#{parseInt(row.total_profit).toFixed(2)}
+                    td $#{parseInt(row.profit_lost).toFixed(2)}
             
         

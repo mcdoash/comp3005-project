@@ -358,6 +358,10 @@ section#report th, section#report td {
 }
 
 section#report th {
+  background-color: #d5d5d5;
+}
+
+section#report tr#totals {
   background-color: #f2f2f2;
 }
 
