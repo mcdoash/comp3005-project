@@ -5,6 +5,8 @@ const getCards = "SELECT Card_id, name, '************' || SUBSTRING(Card_num , 1
 
 const createOrder = "INSERT INTO Book_order VALUES(DEFAULT, $1, $2, $3, $4, DEFAULT, NULL, DEFAULT, NULL, NULL) RETURNING Number;";
 
+const deleteOrder = "DELETE FROM Book_Order WHERE Number = $1";
+
 const getOrderData = "SELECT Book_order.Number, Book_order.total, Book_order.Order_date, Book_order.Tracking, Book_order.Cur_location, Book_order.Expected_date, Book_order.Arrival_date, Address.Fname, Address.Lname, Address.Street, Address.City, Address.Province, Address.Postal_code, Address.Country, Address.Phone_num, '************' || SUBSTRING(Card_num , 12, 16) AS Card_num FROM Book_order JOIN Card ON Book_order.Billing = Card.Card_id JOIN Address ON Book_order.Ship_address = Address.ID WHERE Book_order.Number = $1;";
 
 const getOrderBooks = "SELECT Book.ISBN, Book.Title, Book.Price, Sale.Quantity FROM Sale JOIN Book_order ON Sale.Order_num = Book_order.Number JOIN Book ON Sale.Book = Book.ISBN WHERE Book_order.Number = $1;";
@@ -36,18 +38,18 @@ exports.createOrder = (user, cart, callback) => {
 exports.createSales = (order, cart, callback) => {
     let values = [];
     cart.forEach(book => {
-        values.push("('" + book.isbn + "', " + order + ", " + book.quantity + ")");
+        values.push("('" + book.isbn + "', " + order + ", " + book.quantity + ", " + (book.price * book.quantity) + ")");
     });
     const saleQuery = "INSERT INTO Sale VALUES" + values.join();
-    const updateTotal = "SELECT set_order_total(" + order + ")";
 
     db.query(saleQuery, (err) => {
-        if(err) callback(err);
-        else {
-            db.query(updateTotal, (err) => {
-                callback(err);
+        if(err) { //delete
+            db.query(deleteOrder, [order], (err2) => {
+                if(err2) callback(err2);
+                else callback(err);
             });
         }
+        else callback(err);
     });
 }
 
