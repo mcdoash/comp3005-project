@@ -1,11 +1,11 @@
 const db = require("./");
 
-const getAddresses = "SELECT ID, Fname, Lname, Street FROM Address WHERE Address.Account = $1";
-const getCards = "SELECT Card_id, name, '************' || SUBSTRING(Card_num , 12, 16) AS Card_num FROM Card WHERE Card.Account = $1";
+const getAddresses = "SELECT ID, Fname, Lname, Street FROM Address WHERE Address.Account = $1;";
+const getCards = "SELECT Card_id, name, '************' || SUBSTRING(Card_num , 12, 16) AS Card_num FROM Card WHERE Card.Account = $1;";
 
 const createOrder = "INSERT INTO Book_order VALUES(DEFAULT, $1, $2, $3, $4, DEFAULT, NULL, DEFAULT, NULL, NULL) RETURNING Number;";
 
-const deleteOrder = "DELETE FROM Book_Order WHERE Number = $1";
+const deleteOrder = "DELETE FROM Book_Order WHERE Number = $1;";
 
 const getOrderData = "SELECT Book_order.Number, Book_order.total, Book_order.Order_date, Book_order.Tracking, Book_order.Cur_location, Book_order.Expected_date, Book_order.Arrival_date, Address.Fname, Address.Lname, Address.Street, Address.City, Address.Province, Address.Postal_code, Address.Country, Address.Phone_num, '************' || SUBSTRING(Card_num , 12, 16) AS Card_num FROM Book_order JOIN Card ON Book_order.Billing = Card.Card_id JOIN Address ON Book_order.Ship_address = Address.ID WHERE Book_order.Number = $1;";
 

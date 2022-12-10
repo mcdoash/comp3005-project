@@ -8,7 +8,7 @@ const listGroup = "Storefront.ISBN, Storefront.Title, Storefront.Cover, Storefro
 //prepared statments
 const getTopBooks = {
     name: "getPopular",
-    text: "SELECT " + listAttr + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book GROUP BY " + listGroup + " LIMIT $1 OFFSET $2",
+    text: "SELECT " + listAttr + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book GROUP BY " + listGroup + " LIMIT $1 OFFSET $2;",
     values: [booksPerPage, 0]
 } //pagination. refresh
 
@@ -20,7 +20,7 @@ const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEF
 
 const checkBook = "SELECT COUNT(*) AS Exists FROM Book WHERE ISBN = $1;"
 
-const getStock = "SELECT Stock FROM Book WHERE ISBN = $1";
+const getStock = "SELECT Stock FROM Book WHERE ISBN = $1;";
 
 const removeBook = "UPDATE Book SET Selling = FALSE WHERE Book.ISBN = $1;";
 
@@ -93,7 +93,7 @@ exports.getBooks = (params, callback) => {
     let conditions = getParams(params);
     let offset = (params.page - 1) * booksPerPage;
 
-    let query = "SELECT " + listAttr  + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book " + conditions + " GROUP BY " + listGroup + " LIMIT " + booksPerPage + " OFFSET " + offset; 
+    let query = "SELECT " + listAttr  + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book " + conditions + " GROUP BY " + listGroup + " LIMIT " + booksPerPage + " OFFSET " + offset + ";"; 
 
     db.query(query, [], (err, result) => {
         callback(err, result.rows);

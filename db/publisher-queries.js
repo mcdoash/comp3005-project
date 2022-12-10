@@ -14,7 +14,7 @@ exports.addPub = (data, callback) => {
 
 //get array of all publisher names where a word in name starts with a specific string
 exports.getPubMatch = (name, callback) => {
-    const pubMatch = "SELECT ARRAY_AGG(Name) Names FROM Publisher WHERE Name ~* '\\m(" + name + ")'";
+    const pubMatch = "SELECT ARRAY_AGG(Name) Names FROM Publisher WHERE Name ~* '\\m(" + name + ")';";
 
     db.query(pubMatch, (err, result) => {
         if(err) callback(err);
