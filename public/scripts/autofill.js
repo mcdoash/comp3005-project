@@ -26,7 +26,7 @@ function pubAutofill() {
 		if(this.readyState == 4) {
             if(this.status == 200) {
                 const list = JSON.parse(this.responseText).results;
-                if(!list) {
+                if(!list && window.location.pathname == "/owner") {
                     alert("Publisher does not exist. Please type an existing publisher or add a new one.");
                 }
                 else showPubNames(list);
@@ -43,13 +43,15 @@ function showPubNames(names) {
     const list = document.getElementById("pub-names");
     list.innerHTML = ""; //clear
 
-    names.forEach(name => {
-        name = name.replace("'", "&#39;"); //escape '
-        let newName = document.createElement("div"); 
-        newName.innerText = name;
-        newName.setAttribute("onClick", 'setPubName("' + name + '")');
-        list.append(newName);
-    });
+    if(names != null) {
+        names.forEach(name => {
+            name = name.replace("'", "&#39;"); //escape '
+            let newName = document.createElement("div"); 
+            newName.innerText = name;
+            newName.setAttribute("onClick", 'setPubName("' + name + '")');
+            list.append(newName);
+        });
+    }
 }
 
 //set textbox to selected name
@@ -143,13 +145,15 @@ function showGenreNames(names) {
     const list = document.getElementById("genre-names");
     list.innerHTML = ""; //clear
 
-    names.forEach(name => {
-        let newName = document.createElement("div"); 
-        newName.innerText = name;
-        newName.setAttribute("onClick", 'setGenreName("' + name + '")');
-        newName.className = "opt";
-        list.append(newName);
-    });
+    if(names != null) {
+        names.forEach(name => {
+            let newName = document.createElement("div"); 
+            newName.innerText = name;
+            newName.setAttribute("onClick", 'setGenreName("' + name + '")');
+            newName.className = "opt";
+            list.append(newName);
+        });
+    }
 }
 
 //set textbox to selected name

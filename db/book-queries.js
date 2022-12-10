@@ -115,6 +115,10 @@ function getParams(params) {
         conditions.push("Storefront.Price <= '" + params.maxPrice + "'");
     }
     //word boundary search
+    if(params.publisher) {
+        join = "JOIN Genre ON Storefront.ISBN = Genre.Book ";
+        conditions.push("Storefront.Publisher ~* '\\m(" + params.publisher + ")'");
+    }
     if(params.genre) {
         join = "JOIN Genre ON Storefront.ISBN = Genre.Book ";
         conditions.push("Genre.Name ~* '\\m(" + params.genre + ")'");

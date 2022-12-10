@@ -116,10 +116,31 @@ form #email, form #buttons {
 form .form-sect {
   display: block;
   margin-bottom: 10px;
+  position: relative;
 }
 
 form label {
   margin-right: 5px;
+}
+
+form .autofill {
+  width: 100%;
+  max-height: 200px;
+  overflow-y: scroll;
+  position: absolute;
+  top: 3rem;
+  left: 0;
+  z-index: 99;
+}
+
+form .autofill div {
+  padding: 2%;
+  cursor: pointer;
+  background-color: #dddddd;
+}
+
+form .autofill div:hover {
+  background-color: #c1c1c1;
 }
 
 #welcome {
@@ -219,6 +240,10 @@ section#book-list.top {
 #search-options form input[type=submit] {
   margin-top: 15px;
   background-color: #c9c9c9;
+}
+
+#search-options form .autofill {
+  width: 95%;
 }
 
 /*book info page*/
@@ -412,16 +437,6 @@ section#owner-forms form input[type=number] {
 
 section#owner-forms form input[type=radio] {
   margin-right: 10px;
-}
-
-section#owner-forms form#add-book .autofill div {
-  padding: 2%;
-  cursor: pointer;
-  background-color: #dddddd;
-}
-
-section#owner-forms form#add-book .autofill div:hover {
-  background-color: #c1c1c1;
 }
 
 section.order {

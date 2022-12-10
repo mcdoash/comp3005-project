@@ -3,6 +3,7 @@ extends layout
 block scripts
     +script("browse")
     +script("cart")
+    +script("autofill")
 
 block content
     aside#search-options
@@ -16,10 +17,16 @@ block content
                 input(id="title" type="text" name="title" value=params.title)
             .form-sect
                 label(for="genre") Genre:
-                input(id="genre" type="text" name="genre" value=params.genre)
+                input(id="genres" type="text" name="genre" value=params.genre)
+                #genre-names.autofill
             .form-sect
                 label(for="author") Author:
-                input.person(id="author" type="text" name="author" value=params.author)
+                input.person(id="authors" type="text" name="author" value=params.author)
+                #auth-names.autofill
+            .form-sect
+                label(for="publisher") Publisher:
+                input(id="publisher" type="text" name="publisher" value=params.publisher)
+                #pub-names.autofill
             .form-sect
                 label(for="format") Format:
                 input.person(id="format" type="text" name="format" value=params.format)
