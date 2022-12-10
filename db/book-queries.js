@@ -146,7 +146,7 @@ exports.checkStock = (books, callback) => {
 //get current book data (price & stock)
 exports.getCurrent = (books, callback) => {
     books = "'" + books.join("','") + "'";
-    const query = "SELECT ISBN, Price, Stock FROM Book WHERE ISBN IN (" + books + ");";
+    const query = "SELECT ISBN, Price, Stock, Selling FROM Book WHERE ISBN IN (" + books + ");";
     
     db.query(query, (err, result) => {
         callback(err, result.rows);

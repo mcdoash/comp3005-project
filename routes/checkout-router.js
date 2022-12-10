@@ -51,7 +51,7 @@ router.post("/address", (req, res) => {
 
 
 //set card stage
-router.get("/billing", checkLoggedIn, sendCard);
+router.get("/billing", checkLoggedIn, getAccountData, sendCard);
 
 function sendCard(req, res) {
     if(!req.session.cart.address) { //must set address first

@@ -34,7 +34,7 @@ block content
         
     section.confirm
         h3 Card
-        p $#{total} - #{orderCard.card_num}
+        p #{orderCard.name} - #{orderCard.card_num}
 
     form(id="place-order" name="place-orde" action="/orders" method="post") 
         input#send-restore(type="submit" value="Place Order")

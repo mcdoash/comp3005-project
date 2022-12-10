@@ -48,7 +48,7 @@ console.log("Server running on port 3000");
 
 
 //homepage
-app.get("/", getTopBooks, showIndex);
+app.get("/", getTopBooks, testLogIn);
 //app.get("/", testLogIn);
 
 //get a list of the top selling books
@@ -61,29 +61,29 @@ function getTopBooks(req, res, next) {
 }
 
 function testLogIn(req, res, next) {
-    account.logIn("Freeman25@yahoo.com", "e9iAMlXbbKCrPnd", (err, success) => {
+    account.logIn("Floyd_Boehm5@gmail.com", "kXhSswtgdCyDB0a", (err, success) => {
         if(err) console.error(err.stack);
         if(success) {
             req.session.signedIn = true;
-            req.session.user = { email: "Freeman25@yahoo.com" };
+            req.session.user = { email: "Floyd_Boehm5@gmail.com" };
             req.session.cart = {
                 books: [
                   {
-                    isbn: '6934488913',
-                    title: 'structure',
-                    price: 25,
+                    isbn: '0005439398',
+                    title: 'Berkshire purple connect',
+                    price: 6,
                     quantity: 2
                   },
                   {
-                    isbn: '6666665654',
-                    title: 'ghdfgh',
-                    price: 6.00,
+                    isbn: '0026821210',
+                    title: 'Industrial enterprise Savings',
+                    price: 111.00,
                     quantity: 1
                   },
                   {
-                    isbn: '6943167374',
-                    title: 'strategy',
-                    price: 19,
+                    isbn: '0023880543',
+                    title: 'Wooden',
+                    price: 88,
                     quantity: 1
                   },
                 ],
@@ -95,7 +95,8 @@ function testLogIn(req, res, next) {
             return;
         }
         else {
-            res.status(401).send({error: "Invalid email or password."});
+            req.app.locals.sendError(req, res, "Invalid email or password.");
+            return;
         }
     });
 }
@@ -270,10 +271,21 @@ app.locals.refreshCart = ((req, res, next) => {
         results.forEach((item) => {
             let book = req.session.cart.books.find(x => x.isbn == item.isbn);
             let i = req.session.cart.books.findIndex(x => x.isbn == item.isbn);
+            let deleted = false;
 
             //price change
             item.price = parseFloat(item.price);
             book.price = parseFloat(book.price);
+
+            if(!item.selling) {
+                req.session.cart.errors.push({
+                    isbn: book.isbn,
+                    title: book.title,
+                    error: "no longer being sold"
+                });
+                deleted = true;
+                req.session.cart.books.splice(i, 1);
+            }
 
             if(item.price != book.price) {
                 book.price = item.price;
@@ -301,12 +313,15 @@ app.locals.refreshCart = ((req, res, next) => {
                         title: req.book.title,
                         error: "out of stock"
                     });
+                    deleted = true;
                     req.session.cart.books.splice(i, 1);
                 }
             }
             //update totals
-            req.session.cart.total.quantity += book.quantity;
-            req.session.cart.total.price += book.price * book.quantity;
+            if(!deleted) {
+                req.session.cart.total.quantity += book.quantity;
+                req.session.cart.total.price += book.price * book.quantity;
+            }
         });
         next();
     });
