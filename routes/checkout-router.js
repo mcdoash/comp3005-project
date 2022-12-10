@@ -74,57 +74,9 @@ router.post("/billing", (req, res) => {
 router.get("/confirm", checkLoggedIn, getAccountData, confirmStock, showConfirm);
 
 function confirmStock(req, res, next) {
-    const bookList = req.session.cart.books.map((book) => book.isbn); //quantity
-    if(!req.session.cart.errors) {
-        req.session.cart.errors = [];
-    }
-
-    bookDb.checkStock(bookList, (err, results) => {
-        if(err) {
-            console.error(err.stack);
-            req.app.locals.sendError(req, res, 500, "Error checking book stock");
-            return;
-        }
-
-        results.forEach((book) => {
-            let i = req.session.cart.books.findIndex(item => item.isbn == book.isbn);
-
-            //not enough stock
-            if(book.stock < req.session.cart.books[i].quantity) {
-                if(book.stock > 0) { //reduce quantity
-                    const qRemove = req.session.cart.books[i].quantity - book.stock;
-                    req.session.cart.total.quantity -= qRemove;
-                    req.session.cart.books[i].quantity = book.stock;
-
-                    //update price
-                    req.session.cart.total.price -= req.session.cart.books[i].price * qRemove;
-
-                    req.session.cart.errors.push({
-                        isbn: req.session.cart.books[i].isbn,
-                        title: req.session.cart.books[i].title,
-                        error: "quantity changed"
-                    });
-                }
-                else { //remove from cart
-                    req.session.cart.errors.push({
-                        isbn: req.session.cart.books[i].isbn,
-                        title: req.session.cart.books[i].title,
-                        error: "out of stock"
-                    });
-                    //update price
-                    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
-
-                    //update quantity
-                    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
-
-                    req.session.cart.books.splice(i, 1);
-                }
-            }
-        });
-        next();
-    });
+    req.app.locals.refreshCart(req,res, next);
+    return;
 }
-
 
 function showConfirm(req, res) {
     res.status(200).render("checkout/confirm", {

@@ -69,26 +69,25 @@ function testLogIn(req, res, next) {
             req.session.cart = {
                 books: [
                   {
-                    isbn: '9117232372',
-                    title: 'input benchmark Wooden',
-                    price: 133,
+                    isbn: '6934488913',
+                    title: 'structure',
+                    price: 25,
                     quantity: 2
                   },
                   {
-                    isbn: '7619454760',
-                    title: 'Generic Horizontal Avon',
-                    price: 10,
+                    isbn: '6666665654',
+                    title: 'ghdfgh',
+                    price: 6.00,
                     quantity: 1
                   },
                   {
-                    isbn: '6752476965',
-                    title: 'black program',
-                    price: 66,
+                    isbn: '6943167374',
+                    title: 'strategy',
+                    price: 19,
                     quantity: 1
                   },
-                  { isbn: '7584365768', title: 'SDD', price: 111, quantity: 1 }
                 ],
-                total: { price: 453, quantity: 5 }
+                total: { price: 85, quantity: 4 }
               }
 
             res.statusCode = 200;
@@ -111,6 +110,10 @@ function showIndex(req, res) {
 
 //show log in page
 app.get("/login", (req, res) => {
+    if(req.session.signedIn) {
+        req.app.locals.sendError(req, res, 400, "Already signed in.");
+        return;
+    }
     res.status(200).render("login", {session: req.session});
 });
 
@@ -243,6 +246,69 @@ app.get("/authors", (req, res) => {
     book.getAuthorMatch(name, (err, results) => {
         if(err) console.error(err.stack);
         res.status(200).send({results: results});
+    });
+});
+
+
+
+
+//update cart based on current stock and prices
+app.locals.refreshCart = ((req, res, next) => {
+    const bookList = req.session.cart.books.map((book) => book.isbn); 
+        
+    book.getCurrent(bookList, (err, results) => {
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error checking book data");
+            return;
+        }
+        //reset totals
+        req.session.cart.total.quantity = 0;
+        req.session.cart.total.price = 0;
+        req.session.cart.errors = [];
+
+        results.forEach((item) => {
+            let book = req.session.cart.books.find(x => x.isbn == item.isbn);
+            let i = req.session.cart.books.findIndex(x => x.isbn == item.isbn);
+
+            //price change
+            item.price = parseFloat(item.price);
+            book.price = parseFloat(book.price);
+
+            if(item.price != book.price) {
+                book.price = item.price;
+                req.session.cart.errors.push({
+                    isbn: book.isbn,
+                    title: book.title,
+                    error: "price changed"
+                });
+            }
+
+            //not enough stock
+            if(item.stock < book.quantity) {
+                if(item.stock > 0) { //reduce quantity
+                    book.quantity = item.stock;
+
+                    req.session.cart.errors.push({
+                        isbn: book.isbn,
+                        title: book.title,
+                        error: "quantity changed"
+                    });
+                }
+                else { //remove from cart
+                    req.session.cart.errors.push({
+                        isbn: book.isbn,
+                        title: req.book.title,
+                        error: "out of stock"
+                    });
+                    req.session.cart.books.splice(i, 1);
+                }
+            }
+            //update totals
+            req.session.cart.total.quantity += book.quantity;
+            req.session.cart.total.price += book.price * book.quantity;
+        });
+        next();
     });
 });
 

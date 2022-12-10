@@ -4,69 +4,13 @@ const db = require("../db/account-queries");
 const bookDb = require("../db/book-queries");
 
 //show cart page
-router.get("/", refreshCart, sendCart);
+router.get("/", checkCart, sendCart);
 
 //check if changes have been made to cart items
-function refreshCart(req, res, next) {
+function checkCart(req, res, next) {
     if(!req.session.cart) next();
-    else {
-        const bookList = req.session.cart.books.map((book) => book.isbn); 
-        
-        bookDb.getCurrent(bookList, (err, results) => {
-            if(err) {
-                console.error(err.stack);
-                req.app.locals.sendError(req, res, 500, "Error checking book data");
-                return;
-            }
-            //reset totals
-            req.session.cart.total.quantity = 0;
-            req.session.cart.total.price = 0;
-            req.session.cart.errors = [];
-
-            results.forEach((item) => {
-                let book = req.session.cart.books.find(x => x.isbn == item.isbn);
-                let i = req.session.cart.books.findIndex(x => x.isbn == item.isbn);
-
-                //price change
-                item.price = parseFloat(item.price);
-                book.price = parseFloat(book.price);
-
-                if(item.price != book.price) {
-                    book.price = item.price;
-                    req.session.cart.errors.push({
-                        isbn: book.isbn,
-                        title: book.title,
-                        error: "price changed"
-                    });
-                }
-
-                //not enough stock
-                if(item.stock < book.quantity) {
-                    if(item.stock > 0) { //reduce quantity
-                        book.quantity = item.stock;
-
-                        req.session.cart.errors.push({
-                            isbn: book.isbn,
-                            title: book.title,
-                            error: "quantity changed"
-                        });
-                    }
-                    else { //remove from cart
-                        req.session.cart.errors.push({
-                            isbn: book.isbn,
-                            title: req.book.title,
-                            error: "out of stock"
-                        });
-                        req.session.cart.books.splice(i, 1);
-                    }
-                }
-                //update totals
-                req.session.cart.total.quantity += book.quantity;
-                req.session.cart.total.price += book.price * book.quantity;
-            });
-            next();
-        });
-    }
+    else req.app.locals.refreshCart(req, res, next);
+    return;
 }
 
 function sendCart(req, res) {
@@ -98,7 +42,7 @@ router.post("/", (req, res) => {
         req.session.cart.books.push(req.body);
 
         req.session.cart.total.price += req.body.price;
-        req.session.cart.total.quantity ++;
+        req.session.cart.total.quantity++;
         res.status(204).send();
     }
 });
@@ -115,10 +59,6 @@ router.put("/:isbn", (req, res) => {
 //delete from cart
 router.delete("/:isbn", (req, res) => {
     let i = req.session.cart.books.findIndex(item => item.isbn == req.params.isbn);
-
-    //update prices & totals
-    req.session.cart.total.price -= req.session.cart.books[i].price * req.session.cart.books[i].quantity;
-    req.session.cart.total.quantity -= req.session.cart.books[i].quantity;
     req.session.cart.books.splice(i, 1);
 
     res.status(204).send();
@@ -128,8 +68,6 @@ router.delete("/:isbn", (req, res) => {
 
 //update the quantity of a book item according to stock
 function updateQuantity(book, quantity, req, res) {
-    let sendError = false;
-
     bookDb.getStock(book.isbn, (err, stock) => {
         if(err) {
             console.error(err.stack);
@@ -137,23 +75,11 @@ function updateQuantity(book, quantity, req, res) {
             return;
         }
         if(stock < quantity) {
-            quantity = stock; //update to max
-            sendError = true;
-        }
-
-        //update prices & totals
-        req.session.cart.total.price -= book.price * book.quantity;
-        req.session.cart.total.quantity -= book.quantity;
-
-        req.session.cart.total.price += book.price * quantity;
-        req.session.cart.total.quantity += quantity;
-
-        book.quantity = quantity;
-
-        if(sendError) {
+            book.quantity = stock; //update to max
             res.status(400).send({error: "Not enough stock for quantity requested", max: stock});
         }
-        else { 
+        else {
+            book.quantity = quantity;
             res.status(204).send();
         }
         return;
