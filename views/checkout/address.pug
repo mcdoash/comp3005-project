@@ -7,7 +7,7 @@ block content
     section.checkout
         form#set-old-address(name="address-form")
             h2 Choose Address
-            if session.user.addresses
+            if session.user.addresses.length
                 each address in session.user.addresses
                     .form-sect
                         input(type="radio" id="" + address.id + "" value="" + address.id + "" name="address" required) 

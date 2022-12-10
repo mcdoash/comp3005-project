@@ -7,7 +7,7 @@ block content
     section.checkout
         form#set-card(name="billing-form")
             h2 Select Card
-            if session.user.cards
+            if session.user.cards.length
                 each card in session.user.cards
                     .form-sect
                         input(type="radio" id="'card-" + card.card_id + "'" value="" + card.card_id + "" name="card") 
