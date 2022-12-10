@@ -16,8 +16,8 @@ block content
             span#authors
                 != authors
 
-            //!!br broken
-            p#description #{book.blurb}
+            - blurb = book.blurb.replace("<br/>", " ");
+            p#description #{blurb}
 
             #genres
                 each genre in book.genres
@@ -25,7 +25,7 @@ block content
                         a(href="/books?genre=" + genre) #{genre} 
 
             #book-data
-                p <b>Release Date:</b> #{book.release_date}
+                p <b>Release Date:</b> #{book.release_date.toDateString()}
                 p <b>Format:</b> #{book.book_format}
                 p <b>Page count:</b> #{book.page_num}
                 p <b>Publisher:</b> #{book.publisher}
