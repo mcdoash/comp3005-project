@@ -1,6 +1,6 @@
 const faker = require("faker");
 
-//variables for database connection
+//variables for database connection - change in that file
 const dbVars = require("./connection.json");
 
 //set which operations to perform
@@ -21,7 +21,7 @@ let db = new Client(dbVars);
 db
   .connect()
   .then(() => {
-      console.log("Database connected");
+      console.log("Database connected\n");
       if(rebuildDb) clearTables();
       else if(rebuildData) clearData();
   })
@@ -31,7 +31,7 @@ db
 //drop all tables
 function clearTables() {
     const dropQuery = "DROP SCHEMA public CASCADE;CREATE SCHEMA public;";
-    console.log("Droping tables..");
+    console.log("Droping tables...");
     db
       .query(dropQuery)
       .then(() => rebuild())
@@ -316,7 +316,7 @@ function createData() {
                     let bookNum = Math.floor(Math.random() * 14) + 1;
                     let thisBooks = [];
 
-                    let orderTotal = faker.commerce.price(5 * bookNum, 100 * bookNum, 2);//fix to actual total
+                    let orderTotal = faker.commerce.price(5 * bookNum, 100 * bookNum, 2); //fixed via query later
 
                     //create sales
                     for(let x=0; x<bookNum; x++) {
@@ -329,13 +329,13 @@ function createData() {
                         }
                         thisBooks.push(newIsbn);
 
-                        let stock =  (Math.floor(Math.random() * 4) + 1);
-                        if(stocks[y] < stock) stock = stock[y];
+                        let quan =  (Math.floor(Math.random() * 4) + 1);
+                        if(stocks[y] < quan) quan = stock[y];
 
                         saleList.push(
                             "('" + newIsbn + "'," + 
                             (orderList.length + 1) + "," +
-                            stock + ")"
+                            quan + ", 0)" //prices will be fixed via query
                         );
                     }
 
@@ -384,5 +384,7 @@ function createData() {
     "INSERT INTO Address VALUES" + addressList + ";" +
     "INSERT INTO Card VALUES" + cardList + ";" +
     "INSERT INTO Book_order VALUES" + orderList + ";" +
-    "INSERT INTO Sale VALUES" + saleList + ";";
+    "INSERT INTO Sale VALUES" + saleList + ";" + 
+    //ensure sale prices and order totals are correct as fake data may have messed them up
+    "UPDATE Sale SET Price = (Book.Price * Quantity) FROM Book WHERE Sale.Book = Book.ISBN;UPDATE Book_order SET Total = set_order_total(Number);";
 }
