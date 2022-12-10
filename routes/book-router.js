@@ -54,6 +54,7 @@ function sendBooks(req, res) {
     res.status(200).render("book-results", {
         session: req.session,
         books: res.books,
+        params: req.query,
         page: req.query.page
     });
 }

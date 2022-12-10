@@ -6,6 +6,26 @@ block scripts
 
 block content
     aside#search-options
+        h2 Search
+        form(id="search" name="search" action="/books" method="get") 
+            .form-sect
+                label(for="isbn") ISBN:
+                input.person(id="isbn" type="text" name="isbn" value=params.isbn)
+            .form-sect
+                label(for="title") Title:
+                input(id="title" type="text" name="title" value=params.title)
+            .form-sect
+                label(for="genre") Genre:
+                input(id="genre" type="text" name="genre" value=params.genre)
+            .form-sect
+                label(for="author") Author:
+                input.person(id="author" type="text" name="author" value=params.author)
+            .form-sect
+                label(for="format") Format:
+                input.person(id="format" type="text" name="format" value=params.format)
+            //price
+            
+            input(type="submit" value="Search")
 
     section#book-list
         each book in books

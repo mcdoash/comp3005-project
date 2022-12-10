@@ -105,23 +105,27 @@ function getParams(params) {
     let conditions = [];
     let join = ""; //if genre join table
 
-    //isbn -> go to specific book
-    //regex for similar results
+    if(params.isbn) {
+        conditions.push("Storefront.ISBN = '" + params.isbn + "'");
+    }
+    //word boundary search
     if(params.genre) {
         join = "JOIN Genre ON Storefront.ISBN = Genre.Book ";
-        conditions.push("Genre.Name = '" + params.genre + "'");
+        conditions.push("Genre.Name ~* '\\m(" + params.genre + ")'");
     }
     if(params.author) {
-        conditions.push("Storefront.ISBN IN (SELECT Storefront.ISBN FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book WHERE Authored.Author ='" + params.author + "')");
+        conditions.push("Storefront.ISBN IN (SELECT Storefront.ISBN FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book WHERE Authored.Author ~* '(\\m" + params.author + ")')");
     } 
     if(params.title) {
-        conditions.push("Title ~* '\\m(" + params.title + ")\\M'"); //word search
+        conditions.push("Title ~* '\\m(" + params.title + ")\\M'"); 
     }
     if(params.format) {
-        conditions.push("Book_format = '" + params.format + "'");
+        conditions.push("Book_format ~* '\\m(" + params.format + ")'");
     }
 
-    return join + "WHERE " + conditions.join(" AND ");
+    if(conditions.length)
+        return join + "WHERE " + conditions.join(" AND ");
+    else return "";
 }
 
 

@@ -166,6 +166,27 @@ section#book-list {
     &.top  { width: 100%; }
 }
 
+#search-options {
+    h2 { 
+        width: 100%;
+        margin-top: 15px;
+        text-align: center; 
+    }
+    form {
+        width: 100%;
+        background-color: initial;
+
+        input {
+            width: 95%;
+            &[type=submit] { 
+                margin-top: 15px;
+                background-color: #c9c9c9;
+            }
+        }
+    }
+}
+
+
 /*book info page*/
 section#main-info {
     @include flex;
