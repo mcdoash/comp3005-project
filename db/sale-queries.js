@@ -1,11 +1,11 @@
 const db = require("./");
 
-const allReport = "SELECT * FROM get_sales_report($1, $2)";
+const bookReport = "SELECT * FROM get_book_report($1, $2)";
 const genreReport = "SELECT * FROM get_genre_report($1, $2)";
 const authorReport = "SELECT * FROM get_author_report($1, $2)";
 
 exports.getBasicReport = (dates, callback) => {
-    db.query(allReport, dates, (err, result) => {
+    db.query(bookReport, dates, (err, result) => {
         callback(err, result.rows);
     });
 }

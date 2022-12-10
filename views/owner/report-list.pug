@@ -5,41 +5,30 @@ block content
         h3 Report from #{report.from} to #{report.to} by #{report.type}
 
         table
-            if report.type == "all"
-                tr
-                    th Purchased
-                    th Units sold
-                    th Total revenue
-                    th Total profit
-                    th Expenditure
-
-                each row in report.results  
-                    tr
-                        td #{row.purchased}
-                        td #{row.units_sold}
-                        td #{parseInt(row.total_revenue).toFixed(2)}
-                        td #{parseInt(row.total_profit).toFixed(2)}
-                        td #{parseInt(row.total_lost).toFixed(2)}
-            else 
+            tr
+                if report.type == "genre"
+                    th Genre
+                else if report.type == "book"
+                    th Book
+                else
+                    th Author
+                th Total sales
+                th Total revenue
+                th Total profit
+                th Expenditure
+                
+            each row in report.results
                 tr
                     if report.type == "genre"
-                        th Genre
+                        td #{row.genre}
+                    else if report.type == "book"
+                        td 
+                            a(href="/books/" + row.book) #{row.book}
                     else
-                        th Author
-                    th Total sales
-                    th Total revenue
-                    th Total profit
-                    th Expenditure
-                    
-                each row in report.results
-                    tr
-                        if report.type == "genre"
-                            td #{row.genre}
-                        else
-                            td #{row.author}
-                        td #{row.total_sales}
-                        td #{parseInt(row.total_revenue).toFixed(2)}
-                        td #{parseInt(row.total_profit).toFixed(2)}
-                        td #{parseInt(row.profit_lost).toFixed(2)}
+                        td #{row.author}
+                    td #{row.total_sales}
+                    td #{parseInt(row.total_revenue).toFixed(2)}
+                    td #{parseInt(row.total_profit).toFixed(2)}
+                    td #{parseInt(row.profit_lost).toFixed(2)}
             
         

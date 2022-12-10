@@ -10,7 +10,12 @@ router.get("/", (req, res) => {
 router.get("/reports", getReport, sendReport);
 
 function getReport(req, res, next) {
-    if(req.query.type == "all") {
+    if(req.query.from_date > req.query.to_date) {
+        req.app.locals.sendError(req, res, 400, "Invalid dates");
+        return;
+    }
+
+    if(req.query.type == "book") {
         db.getBasicReport([req.query.from_date, req.query.to_date], (err, results) => {
             if(err) { 
                 console.error(err.stack);
