@@ -56,7 +56,7 @@ function sendReport(req, res) {
         report: {
             type: req.query.type,
             from: req.query.from_date,
-            to: req.query.from_date,
+            to: req.query.to_date,
             results: res.report
         }
     });
