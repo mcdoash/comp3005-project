@@ -108,6 +108,12 @@ function getParams(params) {
     if(params.isbn) {
         conditions.push("Storefront.ISBN = '" + params.isbn + "'");
     }
+    if(params.minPrice) {
+        conditions.push("Storefront.Price >= '" + params.minPrice + "'");
+    }
+    if(params.maxPrice) {
+        conditions.push("Storefront.Price <= '" + params.maxPrice + "'");
+    }
     //word boundary search
     if(params.genre) {
         join = "JOIN Genre ON Storefront.ISBN = Genre.Book ";

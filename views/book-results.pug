@@ -23,7 +23,12 @@ block content
             .form-sect
                 label(for="format") Format:
                 input.person(id="format" type="text" name="format" value=params.format)
-            //price
+            .form-sect
+                label(for="minPrice") Minimum Price: 
+                input(type="number" id="minPrice" name="minPrice" step="0.01" min="0.01" max="10000" value=params.minPrice)
+            .form-sect
+                label(for="maxPrice") Maximum Price: 
+                input(type="number" id="maxPrice" name="maxPrice" step="0.01" min="0.01" max="10000" value=params.maxPrice)
             
             input(type="submit" value="Search")
 
