@@ -24,7 +24,7 @@ GROUP BY Storefront.ISBN, Storefront.Title, Storefront.Cover,
 
 --create a new book 
 INSERT INTO Book 
-VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11, TRUE) 
+VALUES('1234567890', 'Title', 'linkToCover', 'Publisher Name', 'Book description', 25.50, 200, 'Hardcover', 2022-01-01, DEFAULT, 100, 0.05, TRUE) 
 RETURNING ISBN;
 
 --check if a book wiht isbn exists
@@ -43,13 +43,13 @@ UPDATE Book SET Selling = TRUE WHERE Book.ISBN = $1;
 
 --add new genres to book 
 INSERT INTO Genre 
-VALUES ('genreName', 'isbn'),
+VALUES ('Fantasy', '1234567890'),
 	   ('genreName', 'isbn'),
 	   ...;
 
 --add new authors to book 
 INSERT INTO Authored 
-VALUES ('authorName', 'isbn'),
+VALUES ('John Doe', '1234567890'),
 	   ('authorName', 'isbn'),
 	   ...;
 
@@ -78,17 +78,17 @@ LIMIT 20 OFFSET 0;
 --get the stock of a list of books 
 SELECT ISBN, Stock 
 FROM Book 
-WHERE ISBN IN ('isbn1', 'isbn2', ...);
+WHERE ISBN IN ('1234567890', 'isbn2', ...);
 
 --get the current status of a list of books (stock, price, sellinmg)
 SELECT ISBN, Price, Stock, Selling 
 FROM Book 
-WHERE ISBN IN ('isbn1', 'isbn2', ...);
+WHERE ISBN IN ('1234567890', 'isbn2', ...);
 
---get a list of all authors that match given name (word boundary search)
+--get a list of all authors that match given name (word boundary search) ex. will get "May Doe" anf "John Mayor"
 SELECT ARRAY_AGG(DISTINCT Author) Names 
 FROM Authored 
-WHERE Author ~* '\m($1)';
+WHERE Author ~* '\m(may)';
 
 
 --get a list of all genres that match given name (word boundary search)
@@ -103,7 +103,7 @@ WHERE Name ~* '\m($1)';
 SELECT COUNT(*) AS Exists FROM Publisher WHERE Name = $1;
 
 --create new publisher
-INSERT INTO Publisher VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
+INSERT INTO Publisher VALUES('Publisher Name', 'email@publisher.com', 'Address Name', '123 Lane Street', 'City', 'ON', 'A1B3C4', 'Canada', '123-456-7890', 'Account Name', '123456678');
 
 --get a list of all publishers that match query
 SELECT ARRAY_AGG(Name) Names 
@@ -117,7 +117,7 @@ WHERE Name ~* '\m($1)';
 SELECT COUNT(*) as exists FROM Account WHERE Email = $1;
 
 --create new account
-INSERT INTO Account VALUES($1, $2, $3, $4);
+INSERT INTO Account VALUES('email@example.com', 'Fname', 'lname', 'password');
 
 --check login attempt
 SELECT COUNT(*) as success 
@@ -131,12 +131,12 @@ WHERE Email = $1;
 
 --create a new address for the account
 INSERT INTO Address 
-VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9) 
+VALUES(DEFAULT, 'email@example.com', 'fname', 'lname', 'Street', 'city', 'PR', 'Postal', 'Country', '123-456-7890') 
 RETURNING ID;
 
 --create a new card for the account
 INSERT INTO Card 
-VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) 
+VALUES(DEFAULT, 'email@example.com', '1234567890123456', 'Name', 2023-04-01, '345', 7) 
 RETURNING Card_id;
 
 --get all of an account's addresses
@@ -146,7 +146,7 @@ WHERE Address.Account = $1;
 
 --get all of an accounts cards
 SELECT Card_id, name, 
-	   '************' || SUBSTRING(Card_num , 12, 16) AS Card_num 
+	   '************' || SUBSTRING(Card_num, 12, 16) AS Card_num 
 FROM Card 
 WHERE Card.Account = $1;
 
@@ -155,12 +155,12 @@ WHERE Card.Account = $1;
 /*ORDERS*/
 --create a new order
 INSERT INTO Book_order 
-VALUES(DEFAULT, $1, $2, $3, $4, DEFAULT, NULL, DEFAULT, NULL, NULL) 
+VALUES(DEFAULT, 'email@example.com', 25.46, 9, 4, DEFAULT, NULL, DEFAULT, NULL, NULL) 
 RETURNING Number;
 
 --create new sales for an order
 INSERT INTO Sale 
-VALUES ('isbn', number, quantity, price * quantity),
+VALUES ('123456789', 8, 2, 20),
 	   ('isbn', number, quantity, price * quantity),
 	   ...;
 
@@ -174,7 +174,7 @@ SELECT Book_order.Number, Book_order.total, Book_order.Order_date,
 	   Book_order.Expected_date, Book_order.Arrival_date, Address.Fname, 
 	   Address.Lname, Address.Street, Address.City, Address.Province, 
 	   Address.Postal_code, Address.Country, Address.Phone_num, 
-	   '************' || SUBSTRING(Card_num , 12, 16) AS Card_num 
+	   '************' || SUBSTRING(Card_num, 12, 16) AS Card_num 
 FROM Book_order JOIN Card ON Book_order.Billing = Card.Card_id 
 				JOIN Address ON Book_order.Ship_address = Address.ID 
 WHERE Book_order.Number = $1;
@@ -196,7 +196,7 @@ ORDER BY inProgress DESC, Order_date DESC;
 
 /*REPORTS*/
 --get a report grouped by book from date 1 to date 2
-SELECT * FROM get_book_report($1, $2);
+SELECT * FROM get_book_report(2022-11-01, 2022-12-01);
 
 --get a report grouped by genre from date 1 to date 2
 SELECT * FROM get_genre_report($1, $2);
