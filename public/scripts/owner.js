@@ -1,3 +1,4 @@
+//remove a book from the storefront
 function removeBook() {
     event.preventDefault();
     let isbn = document.forms["remove-book"]["isbn"].value;
@@ -19,6 +20,7 @@ function removeBook() {
     req.send(JSON.stringify({isbn: isbn}));
 }
 
+//restore a book to the storefront
 function restoreBook() {
     event.preventDefault();
     let isbn = document.forms["restore-book"]["isbn"].value;

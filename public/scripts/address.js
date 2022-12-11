@@ -16,7 +16,7 @@ document.getElementById("set-new-add").addEventListener("submit", () => {
     const form = document.getElementById("set-new-add");
     const formData = new FormData(form);
 
-    let data = {};
+    let data = {}; //create form data object
     formData.forEach((val, field) => data[field] = val);
 
     let req = new XMLHttpRequest();

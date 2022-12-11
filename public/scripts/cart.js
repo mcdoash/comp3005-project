@@ -1,4 +1,4 @@
-
+//add a book to the cart
 function addToCart(isbn, title, price) {
     let data = {isbn: isbn, title: title, price: price};
 
@@ -22,6 +22,7 @@ function addToCart(isbn, title, price) {
 	req.send(JSON.stringify(data));
 }
 
+//remove a book from the cart
 function removeFromCart(isbn) {
     let req = new XMLHttpRequest();
 	req.onreadystatechange = function() {
@@ -34,6 +35,7 @@ function removeFromCart(isbn) {
 	req.send();
 }
 
+//change the quanitity of a pre-existing cart item
 function changeQuantity(isbn, input) {
     const val = parseInt(input.value);
     

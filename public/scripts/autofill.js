@@ -12,7 +12,7 @@ Array.from(sects).forEach((sect) => sect.addEventListener("mouseover", () => {
 //publisher autofill
 document.getElementById("publisher").addEventListener("input", pubAutofill);
 document.getElementById("publisher").addEventListener("focus", function() {
-    if(this.value == "") pubAutofill();
+    if(this.value == "") pubAutofill(); //if click on empty input
 });
 document.addEventListener("focusout", closeOpts);
 
@@ -39,6 +39,7 @@ function pubAutofill() {
 	req.send();
 }
 
+ //display the list of matching publisher names
 function showPubNames(names) {
     const list = document.getElementById("pub-names");
     list.innerHTML = ""; //clear
@@ -88,6 +89,7 @@ function authorAutofill() {
 	req.send();
 }
 
+ //display the list of matching author names
 function showAuthNames(names) {
     const list = document.getElementById("auth-names");
     list.innerHTML = ""; //clear
@@ -141,6 +143,7 @@ function genreAutofill() {
 	req.send();
 }
 
+ //display the list of matching genre names
 function showGenreNames(names) {
     const list = document.getElementById("genre-names");
     list.innerHTML = ""; //clear
