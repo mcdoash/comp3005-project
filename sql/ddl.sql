@@ -189,7 +189,7 @@ CREATE TABLE Sale (
 	Book        CHAR(10),
 	Order_num   INT,
 	Quantity    SMALLINT        NOT NULL,
-    Price       numeric(5, 2)   NOT NULL,
+    Price       numeric(7, 2)   NOT NULL,
 	
 	PRIMARY KEY (Book, Order_num),
 	FOREIGN KEY (Book)
