@@ -27,7 +27,7 @@ function parseQueries(req, res, next) {
 
 function getBooks(req, res, next) {
     if(!res.params) { //no search params
-        db.getPopular((err, result) => {
+        db.getPopular(req.query.page, (err, result) => {
             if(err) {
                 console.error(err.stack);
                 req.app.locals.sendError(req, res, 500, "Error retrieving books");

@@ -5,15 +5,15 @@ const booksPerPage = 20;
 const listAttr = "Storefront.ISBN, Storefront.Title, Storefront.Cover, ARRAY_AGG(DISTINCT Authored.Author) Authors, Storefront.Price, Storefront.inStock";
 const listGroup = "Storefront.ISBN, Storefront.Title, Storefront.Cover, Storefront.Price, Storefront.inStock";
 
-//prepared statments
+const getTopX = "SELECT " + listAttr + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book GROUP BY " + listGroup + " LIMIT $1 OFFSET $2;";
+
+//get the top 20 books which are shown on hompage and when first browsing
 const getTopBooks = {
-    name: "getPopular",
-    text: "SELECT " + listAttr + " FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book GROUP BY " + listGroup + " LIMIT $1 OFFSET $2;",
+    name: "getPopular", //prepared statment
+    text: getTopX,
     values: [booksPerPage, 0]
-} //pagination. refresh
+}
 
-
-//other queries
 const getSpecficBook = "SELECT Storefront.*, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book JOIN Genre ON Storefront.ISBN = Genre.Book WHERE Storefront.ISBN = $1 GROUP BY Storefront.ISBN, Storefront.Title, Storefront.Cover, Storefront.Publisher, Storefront.Blurb, Storefront.Price, Storefront.page_num, Storefront.Book_format, Storefront.Release_date, Storefront.inStock;";
 
 const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11, TRUE) RETURNING ISBN;";
@@ -64,8 +64,16 @@ exports.addAuthors = (book, authors, callback) => {
 
 
 //get a list of the highest selling book info
-exports.getPopular = (callback) => {
-    db.query(getTopBooks, (err, result) => {
+exports.getPopular = (page, callback) => {
+    let query;
+    if(page > 1) { //get specific set/page
+        const offset = (page - 1) * booksPerPage;
+        query = {text: getTopX, values: [booksPerPage, offset]};
+    }
+    else query = getTopBooks; //prepared top 20
+    
+    db.query(query, (err, result) => {
+        console.log(result.rows.length);
         callback(err, result.rows);
     });
 }

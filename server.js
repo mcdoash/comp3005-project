@@ -48,56 +48,14 @@ console.log("Server running on port 3000");
 
 
 //homepage
-app.get("/", getTopBooks, testLogIn);
-//app.get("/", testLogIn);
+app.get("/", getTopBooks, showIndex);
 
 //get a list of the top selling books
 function getTopBooks(req, res, next) {
-    book.getPopular((err, result) => {
+    book.getPopular(1, (err, result) => {
         if(err) console.error(err.stack);
         res.books = result;
         next();
-    });
-}
-
-function testLogIn(req, res, next) {
-    account.logIn("Floyd_Boehm5@gmail.com", "kXhSswtgdCyDB0a", (err, success) => {
-        if(err) console.error(err.stack);
-        if(success) {
-            req.session.signedIn = true;
-            req.session.user = { email: "Floyd_Boehm5@gmail.com" };
-            req.session.cart = {
-                books: [
-                  {
-                    isbn: '0005439398',
-                    title: 'Berkshire purple connect',
-                    price: 6,
-                    quantity: 2
-                  },
-                  {
-                    isbn: '0026821210',
-                    title: 'Industrial enterprise Savings',
-                    price: 111.00,
-                    quantity: 1
-                  },
-                  {
-                    isbn: '0023880543',
-                    title: 'Wooden',
-                    price: 88,
-                    quantity: 1
-                  },
-                ],
-                total: { price: 85, quantity: 4 }
-              }
-
-            res.statusCode = 200;
-            res.redirect("/cart");
-            return;
-        }
-        else {
-            req.app.locals.sendError(req, res, "Invalid email or password.");
-            return;
-        }
     });
 }
 
@@ -179,7 +137,7 @@ function parseInput(req, res, next) {
     next();
 }
 
-//make sure publisher doean't already exist
+//make sure publisher doesn't already exist
 function checkPub(req, res, next) {
     publisher.checkPub(req.body.name, (err, exists) => {
         if(err) console.error(err.stack);
@@ -328,6 +286,7 @@ app.locals.refreshCart = ((req, res, next) => {
 });
 
 
+//show an error message
 app.locals.sendError = ((req, res, code, error) => {
     if(req.accepts("html")) {
         res.status(code).render("error", {
@@ -341,6 +300,7 @@ app.locals.sendError = ((req, res, code, error) => {
       }
 });
 
+//show a success message
 app.locals.sendSuccess = ((req, res, code, message) => {
     if(req.accepts("html")) {
         res.status(code).render("success", {
