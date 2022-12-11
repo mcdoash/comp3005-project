@@ -48,13 +48,14 @@ router.post("/", (req, res) => {
 });
 
 
-//update quantity
+//update quantity of cart book
 router.put("/:isbn", (req, res) => {
     const book = req.session.cart.books.find(item => item.isbn == req.params.isbn);
     
     updateQuantity(book, req.body.quantity, req, res);
     return;
 });
+
 
 //delete from cart
 router.delete("/:isbn", (req, res) => {

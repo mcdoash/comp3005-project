@@ -6,6 +6,7 @@ const pug = require("pug");
 app.set("view engine", "pug");
 app.set("views", "./views");
 
+//session
 const session = require("express-session");
 app.use(
   session({
@@ -52,8 +53,12 @@ app.get("/", getTopBooks, showIndex);
 
 //get a list of the top selling books
 function getTopBooks(req, res, next) {
-    book.getPopular(1, (err, result) => {
-        if(err) console.error(err.stack);
+    book.getPopular(1, (err, result) => { //1 = first 20
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error getting book info.");
+            return;
+        }
         res.books = result;
         next();
     });
@@ -81,7 +86,11 @@ app.post("/login", tryLogIn);
 
 function tryLogIn(req, res, next)  {
     account.logIn(req.body.email, req.body.password, (err, success) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Log in error.");
+            return;
+        }
         if(success) {
             app.locals.logInUser(req, res, req.body.email);
             return;
@@ -93,9 +102,10 @@ function tryLogIn(req, res, next)  {
     });
 }
 
+//set user session to logged in user
 app.locals.logInUser = ((req, res, user) => {
     req.session.signedIn = true;
-    req.session.user = { email: req.body.email };
+    req.session.user = { email: user };
 
     account.getInfo(req.body.email, (err, info) => {
         if(err) {
@@ -106,12 +116,12 @@ app.locals.logInUser = ((req, res, user) => {
         req.session.user.name = info.name;
 
         res.statusCode = 200;
-        res.redirect("/");
+        res.redirect("/"); //redirect to homepage
         return;
     });
 });
 
-
+//remove session data on log out
 app.get("/logout", (req, res) => {
     if(req.session.signedIn) {
         req.session.destroy();
@@ -130,9 +140,10 @@ app.get("/logout", (req, res) => {
 //add new publisher
 app.post("/publishers", parseInput, checkPub, createPub);
 
+//format data
 function parseInput(req, res, next) {
     req.pubData = Object.values(req.body);
-
+    //escape '
     req.pubData.forEach(item => item = item.replace("'", "''"));
     next();
 }
@@ -140,7 +151,11 @@ function parseInput(req, res, next) {
 //make sure publisher doesn't already exist
 function checkPub(req, res, next) {
     publisher.checkPub(req.body.name, (err, exists) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error getting publisher info.");
+            return;
+        }
         if(exists == 0) next();
         else {
             req.app.locals.sendError(req, res, 400, "Publisher '" + req.body.name + "' already exists");
@@ -175,10 +190,14 @@ function createPub(req, res) {
 app.get("/publishers", (req, res) => {
     let name = req.query.name;
     name = name.replace("'", "''"); //escape
-    if(!name) name = "";
+    if(!name) name = ""; //get all if none
 
     publisher.getPubMatch(name, (err, results) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error getting publisher info.");
+            return;
+        }
         res.status(200).send({results: results});
     });
 });
@@ -190,7 +209,11 @@ app.get("/genres", (req, res) => {
     if(!name) name = "";
 
     book.getGenreMatch(name, (err, results) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error getting genre info.");
+            return;
+        }
         res.status(200).send({results: results});
     });
 });
@@ -203,7 +226,11 @@ app.get("/authors", (req, res) => {
     if(!name) name = "";
 
     book.getAuthorMatch(name, (err, results) => {
-        if(err) console.error(err.stack);
+        if(err) {
+            console.error(err.stack);
+            req.app.locals.sendError(req, res, 500, "Error getting author info.");
+            return;
+        }
         res.status(200).send({results: results});
     });
 });
@@ -231,10 +258,7 @@ app.locals.refreshCart = ((req, res, next) => {
             let i = req.session.cart.books.findIndex(x => x.isbn == item.isbn);
             let deleted = false;
 
-            //price change
-            item.price = parseFloat(item.price);
-            book.price = parseFloat(book.price);
-
+            //removed from store
             if(!item.selling) {
                 req.session.cart.errors.push({
                     isbn: book.isbn,
@@ -244,6 +268,10 @@ app.locals.refreshCart = ((req, res, next) => {
                 deleted = true;
                 req.session.cart.books.splice(i, 1);
             }
+
+            //price change
+            item.price = parseFloat(item.price);
+            book.price = parseFloat(book.price);
 
             if(item.price != book.price) {
                 book.price = item.price;
@@ -284,6 +312,7 @@ app.locals.refreshCart = ((req, res, next) => {
         next();
     });
 });
+
 
 
 //show an error message

@@ -2,11 +2,9 @@ const express = require("express");
 let router = express.Router();
 const db = require("../db/order-queries");
 
+//create an order based on cart
 router.post("/", createOrder, createSales);
-router.get("/", getUserOrders, showOrderList);
-router.get("/:order", showOrder);
 
-//create the order based on cart
 function createOrder(req, res, next) { 
     db.createOrder(req.session.user.email, req.session.cart, (err, num) => {
         if(err) {
@@ -41,6 +39,7 @@ function createSales(req, res) {
     });
 }
 
+
 //get order data for a particular order
 router.param("order" , (req, res, next, num) => {
     db.getOrder(num, (err, order) => {
@@ -56,13 +55,17 @@ router.param("order" , (req, res, next, num) => {
 });
 
 //display a particular order
-function showOrder(req, res) {
+router.get("/:order", (req, res) => {
     res.status(200).render("order", {
         session: req.session,
         order: res.order
     });
-}
+});
 
+
+
+//get view orders page
+router.get("/", getUserOrders, showOrderList);
 
 //get all of a user's orders if signed in
 function getUserOrders(req, res, next) {

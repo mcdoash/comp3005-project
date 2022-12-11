@@ -31,13 +31,14 @@ function newAccount(req, res) {
             req.app.locals.sendError(req, res, 500, "Could not create account.");
             return;
         }
+        //log the new user in
         req.app.locals.logInUser(req, res, req.body.email);
         return;
     });
 }
 
 
-
+//check if the user is already signed in
 function checkSignedIn(req, res, next) {
     if(req.session.signedIn) next();
     else {

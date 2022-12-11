@@ -3,13 +3,10 @@ let router = express.Router();
 const db = require("../db/book-queries");
 const publisher = require("../db/publisher-queries");
 
-//list of books
+//get list of books
 router.get("/", parseQueries, getBooks, sendBooks);
-router.post("/", parseInput, checkIsbn, checkPub, createBook, createGenre, createAuthored);
-router.delete("/", removeBook);
-router.put("/", restoreBook);
-router.get("/:isbn", sendOneBook);
 
+//ensure queries are valid
 function parseQueries(req, res, next) {
     if(Object.keys(req.query).length
     ) res.params = true; //search params
@@ -18,9 +15,8 @@ function parseQueries(req, res, next) {
     if(!req.query.page || req.query.page < 1)  {
             req.query.page = 1;
     }
-    try {
-        req.query.page = Number(req.query.page);
-    } catch { req.query.page = 1 };
+    try { req.query.page = Number(req.query.page); } 
+    catch { req.query.page = 1 };
     
     next();
 }
@@ -50,6 +46,7 @@ function getBooks(req, res, next) {
     }
 }
 
+//send book list
 function sendBooks(req, res) {
     res.status(200).render("book-results", {
         session: req.session,
@@ -59,6 +56,10 @@ function sendBooks(req, res) {
     });
 }
 
+
+
+//add a new book
+router.post("/", parseInput, checkIsbn, checkPub, createBook, createGenre, createAuthored);
 
 //format new book request
 function parseInput(req, res, next) {
@@ -149,7 +150,7 @@ function createAuthored(req, res) {
             req.app.locals.sendError(req, res, 500, "Error creating author");
             return;
         }
-
+        //show new book
         res.statusCode = 204;
         res.redirect("/books/" + res.book);
         return;
@@ -157,11 +158,13 @@ function createAuthored(req, res) {
 }
 
 
+
 //remove a book from the store
-function removeBook(req, res) {
+router.delete("/", (req, res) => {
+    //make sure book exists
     db.checkBook(req.body.isbn, (err, exists) => {
         if(err) console.error(err.stack);
-        if(exists == 1) {
+        if(exists == 1) { //remove from storefront
             db.removeBook(req.body.isbn, (err) => {
                 if(err) {
                     console.error(err.stack);
@@ -177,9 +180,12 @@ function removeBook(req, res) {
             return;
         }
     });
-}
+});
 
-function restoreBook(req, res) {
+
+//restore a book to the store
+router.put("/", (req, res) => {
+    //make sure book exists
     db.checkBook(req.body.isbn, (err, exists) => {
         if(err) {
             console.error(err.stack);
@@ -202,10 +208,10 @@ function restoreBook(req, res) {
             return;
         }
     });
-}
+});
 
 
-//individual book
+//get individual book
 router.param("isbn" , (req, res, next, isbn) => {
     db.getSpecific(isbn, (err, result) => {
         if(err)  {
@@ -222,11 +228,13 @@ router.param("isbn" , (req, res, next, isbn) => {
     });
 });
 
-function sendOneBook(req, res) {
+
+//send a specific book
+router.get("/:isbn", (req, res) => {
     res.status(200).render("book", {
         session: req.session,
         book: res.book
     });
-}
+});
 
 module.exports = router;

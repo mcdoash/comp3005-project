@@ -2,11 +2,13 @@ const express = require("express");
 let router = express.Router();
 const db = require("../db/sale-queries");
 
+//get owner interface page
 router.get("/", (req, res) => {
     res.status(200).render("owner/", {session: req.session});
 });
 
 
+//get a report pased on params
 router.get("/reports", getReport, sendReport);
 
 function getReport(req, res, next) {

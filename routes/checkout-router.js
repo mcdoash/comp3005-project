@@ -11,17 +11,6 @@ function checkLoggedIn(req, res, next) {
     }
 }
 
-//get checkout page
-router.get("/", checkLoggedIn, checkCheckoutAccess,  getAccountData, showCheckout);
-
-function checkCheckoutAccess(req, res, next) {
-    if(!req.session.cart) { 
-        req.app.locals.sendError(req, res, 400, "Cart empty");
-        return;
-    }
-    next();
-}
-
 //get account cards and addresses
 function getAccountData(req, res, next) {
     db.getAccountData(req.session.user.email, (err, results) => {
@@ -34,6 +23,19 @@ function getAccountData(req, res, next) {
         req.session.user.addresses = results.addresses;
         next();
     });
+}
+
+
+//get checkout page
+router.get("/", checkLoggedIn, checkCheckoutAccess,  getAccountData, showCheckout);
+
+//make sure user is allowed to view checkout
+function checkCheckoutAccess(req, res, next) {
+    if(!req.session.cart) { 
+        req.app.locals.sendError(req, res, 400, "Cart empty");
+        return;
+    }
+    next();
 }
 
 //show first stage of checkout process
@@ -65,6 +67,7 @@ router.post("/address", (req, res) => {
 //set card stage
 router.get("/billing", checkLoggedIn, checkCardAccess, getAccountData, sendCard);
 
+//make sure user is allowed to view card stage page
 function checkCardAccess(req, res, next) {
     if(!req.session.cart) { 
         req.app.locals.sendError(req, res, 400, "Cart empty");
@@ -95,6 +98,7 @@ router.post("/billing", (req, res) => {
 //confirm order page
 router.get("/confirm", checkLoggedIn, checkConfirmAccess, getAccountData, confirmStock, showConfirm);
 
+//make sure user is allowed to view confirm page
 function checkConfirmAccess(req, res, next) {
     if(!req.session.cart) { 
         req.app.locals.sendError(req, res, 400, "Cart empty");
