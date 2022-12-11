@@ -24,8 +24,14 @@ function createSales(req, res) {
     db.createSales(res.orderNum, req.session.cart.books, (err) => {
         if(err) {
             console.error(err.stack);
-            req.app.locals.sendError(req, res, 500, "Problem creating order");
-            return;
+            if(err.code == "P0001") { //stock change while confirming
+                req.app.locals.sendError(req, res, 500, "Order cancelled as one or more books went out of stock while completing order");
+                return;
+            }
+            else {
+                req.app.locals.sendError(req, res, 500, "Problem creating order. Please try again");
+                return;
+            }
         }
         req.session.cart = null; //clear cart
         //redirect to new order page
@@ -58,7 +64,7 @@ function showOrder(req, res) {
 }
 
 
-
+//get all of a user's orders if signed in
 function getUserOrders(req, res, next) {
     if(!req.session.signedIn) next();
     else {
