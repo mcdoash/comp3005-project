@@ -330,7 +330,7 @@ function createData() {
                         thisBooks.push(newIsbn);
 
                         let quan =  (Math.floor(Math.random() * 4) + 1);
-                        if(stocks[y] < quan) quan = stock[y];
+                        if(stocks[y] < quan) quan = stocks[y];
 
                         saleList.push(
                             "('" + newIsbn + "'," + 
@@ -386,5 +386,5 @@ function createData() {
     "INSERT INTO Book_order VALUES" + orderList + ";" +
     "INSERT INTO Sale VALUES" + saleList + ";" + 
     //ensure sale prices and order totals are correct as fake data may have messed them up
-    "UPDATE Sale SET Price = (Book.Price * Quantity) FROM Book WHERE Sale.Book = Book.ISBN;UPDATE Book_order SET Total = set_order_total(Number);";
+    "UPDATE Sale SET Price = (Book.Price * Quantity) FROM Book WHERE Sale.Book = Book.ISBN;UPDATE Book_order SET Total = get_order_total(Number);";
 }

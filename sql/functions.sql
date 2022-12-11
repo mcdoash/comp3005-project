@@ -38,7 +38,7 @@ BEGIN
 	RETURN query
     SELECT Book.ISBN AS Purchased, Sale.Quantity AS Units_sold, 
 		   Sale.Price AS Total_revenue, 
-		   ((Sale.Price - (Sale.Price * Book.Sale_Percent)) AS Total_profit,
+		   (Sale.Price - (Sale.Price * Book.Sale_Percent)) AS Total_profit,
 		   (Sale.Price * Book.Sale_Percent) AS Total_lost
 	FROM Sale JOIN Book ON Sale.Book = Book.ISBN
 		  	  JOIN Book_order ON Sale.Order_num = Book_order.Number
