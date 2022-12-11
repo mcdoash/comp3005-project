@@ -32,7 +32,7 @@ block content
                 input(type="month" name="expiry" placeholder="2025-08" min=(year + "-" + month) required)
             .form-sect
                 label(for="cvv") CVV:
-                input(type="text" name="cvv" placeholder="123" required minlength="2" maxlength="4")
+                input(type="text" name="cvv" placeholder="123" required minlength="2" maxlength="4" pattern="[0-9]{3,4}")
 
             br
             h3 Billing Address
