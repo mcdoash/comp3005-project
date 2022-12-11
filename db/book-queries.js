@@ -25,6 +25,8 @@ const getStock = "SELECT Stock FROM Book WHERE ISBN = $1;";
 const removeBook = "UPDATE Book SET Selling = FALSE WHERE Book.ISBN = $1;";
 
 const restoreBook = "UPDATE Book SET Selling = TRUE WHERE Book.ISBN = $1;";
+
+const deleteBook = "DELETE FROM Book WHERE Book.ISBN = $1;";
     
 
 
@@ -45,7 +47,12 @@ exports.addGenres = (book, genres, callback) => {
     const genreQuery = "INSERT INTO Genre VALUES" + values.join();
 
     db.query(genreQuery, (err) => {
-        callback(err);
+        if(err) { //delete book if genres could not be added
+            db.query(deleteBook, [book], (err2) => {
+                if(err2) callback(err2);
+                else callback(err);
+            });
+        } else callback(err);
     });
 }
 
@@ -58,7 +65,12 @@ exports.addAuthors = (book, authors, callback) => {
     const authorQuery = "INSERT INTO Authored VALUES" + values.join();
 
     db.query(authorQuery, (err) => {
-        callback(err);
+        if(err) { //delete book if authors could not be added
+            db.query(deleteBook, [book], (err2) => {
+                if(err2) callback(err2);
+                else callback(err);
+            });
+        } else callback(err);
     });
 }
 

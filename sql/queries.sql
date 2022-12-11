@@ -53,6 +53,9 @@ VALUES ('John Doe', '1234567890'),
 	   ('authorName', 'isbn'),
 	   ...;
 
+--delete a book (on author or genre insert error) 
+DELETE FROM Book WHERE Book.ISBN = $1;
+
 --get books based on search params. example with max params
 SELECT Storefront.ISBN, Storefront.Title, Storefront.Cover, 
 	   ARRAY_AGG(DISTINCT Authored.Author) Authors, 
