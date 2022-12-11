@@ -17,15 +17,10 @@ const getTopBooks = {
 const getSpecficBook = "SELECT Storefront.*, ARRAY_AGG(DISTINCT Authored.Author) Authors, ARRAY_AGG(DISTINCT Genre.Name) Genres FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book JOIN Genre ON Storefront.ISBN = Genre.Book WHERE Storefront.ISBN = $1 GROUP BY Storefront.ISBN, Storefront.Title, Storefront.Cover, Storefront.Publisher, Storefront.Blurb, Storefront.Price, Storefront.page_num, Storefront.Book_format, Storefront.Release_date, Storefront.inStock;";
 
 const newBook = "INSERT INTO Book VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, DEFAULT, $10, $11, TRUE) RETURNING ISBN;";
-
 const checkBook = "SELECT COUNT(*) AS Exists FROM Book WHERE ISBN = $1;"
-
 const getStock = "SELECT Stock FROM Book WHERE ISBN = $1;";
-
 const removeBook = "UPDATE Book SET Selling = FALSE WHERE Book.ISBN = $1;";
-
 const restoreBook = "UPDATE Book SET Selling = TRUE WHERE Book.ISBN = $1;";
-
 const deleteBook = "DELETE FROM Book WHERE Book.ISBN = $1;";
     
 
@@ -146,7 +141,7 @@ function getParams(params) {
     if(params.author) {
         conditions.push("Storefront.ISBN IN (SELECT Storefront.ISBN FROM Storefront JOIN Authored ON Storefront.ISBN = Authored.Book WHERE Authored.Author ~* '(\\m" + params.author + ")')");
     } 
-    if(params.title) {
+    if(params.title) { //search whole word for clearer results
         conditions.push("Title ~* '\\m(" + params.title + ")\\M'"); 
     }
     if(params.format) {
@@ -177,7 +172,7 @@ exports.checkStock = (books, callback) => {
     });
 }
 
-//get current book data (price & stock)
+//get current book data (price & stock, if selling)
 exports.getCurrent = (books, callback) => {
     books = "'" + books.join("','") + "'";
     const query = "SELECT ISBN, Price, Stock, Selling FROM Book WHERE ISBN IN (" + books + ");";
@@ -214,11 +209,13 @@ exports.getGenreMatch = (name, callback) => {
 }
 
 
+//remove a book from storefront
 exports.removeBook = (isbn, callback) => {
     db.query(removeBook, [isbn], (err) => {
         callback(err);
     });
 }
+//restore a book to the storefront
 exports.restoreBook = (isbn, callback) => {
     db.query(restoreBook, [isbn], (err) => {
         callback(err);

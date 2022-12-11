@@ -1,7 +1,7 @@
 const db = require("./");
 
+//queries
 const checkPub = "SELECT COUNT(*) AS Exists FROM Publisher WHERE Name = $1;";
-
 const newPub = "INSERT INTO Publisher VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);";
 
 
