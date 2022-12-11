@@ -1,7 +1,7 @@
 /*ORDERS*/
 --calculate an order's total
 --used right now solely for updating fake data totals 
---as order totals are calculated on checkout
+--as order totals are calculated on checkout via cart
 CREATE OR REPLACE FUNCTION get_order_total(order_number int)
     RETURNS numeric
     LANGUAGE PLPGSQL
@@ -22,7 +22,7 @@ $$;
 
 
 /*REPORTS*/
---basic sales report table       set null to 0? get all genres, set 0?? 
+--basic sales report table
 CREATE OR REPLACE FUNCTION get_sales_report(from_date DATE, to_date DATE)
     RETURNS TABLE (
 		Purchased CHAR,
@@ -60,7 +60,8 @@ CREATE OR REPLACE FUNCTION get_book_report(from_date DATE, to_date DATE)
 $$
 BEGIN
 	RETURN query
-    SELECT r.Purchased, SUM(r.Units_sold) AS Total_sales, 
+    SELECT r.Purchased, 
+		   SUM(r.Units_sold) AS Total_sales, 
 		   SUM(r.Total_revenue) AS Total_revenue, 
 		   SUM(r.Total_profit) AS Total_profit,
 		   SUM(r.Total_lost) AS Profit_lost
@@ -84,7 +85,8 @@ CREATE OR REPLACE FUNCTION get_genre_report(from_date DATE, to_date DATE)
 $$
 BEGIN
 	RETURN query
-	SELECT Genre.Name, SUM(r.Units_sold) AS Total_sales, 
+	SELECT Genre.Name, 
+		   SUM(r.Units_sold) AS Total_sales, 
 		   SUM(r.Total_revenue) AS Total_revenue, 
 		   SUM(r.Total_profit) AS Total_profit,
 		   SUM(r.Total_lost) AS Profit_lost
@@ -109,7 +111,8 @@ CREATE OR REPLACE FUNCTION get_author_report(from_date DATE, to_date DATE)
 $$
 BEGIN
 	RETURN query
-	SELECT Authored.Author, SUM(r.Units_sold) AS Total_sales, 
+	SELECT Authored.Author, 
+		   SUM(r.Units_sold) AS Total_sales, 
 		   SUM(r.Total_revenue) AS Total_revenue, 
 		   SUM(r.Total_profit) AS Total_profit,
 		   SUM(r.Total_lost) AS Profit_lost

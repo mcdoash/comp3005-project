@@ -19,7 +19,7 @@ CREATE OR REPLACE TRIGGER update_store
 
 
 /*STOCK*/
---update book stock on order
+--update book stock on order sale
 CREATE OR REPLACE FUNCTION change_book_stock()
     RETURNS TRIGGER
     LANGUAGE PLPGSQL
@@ -64,7 +64,7 @@ $$
 BEGIN
 	UPDATE Book
 	SET Stock = (Stock + OLD.Quantity),
-		Copies_sold = Copies_sold + OLD.Quantity
+		Copies_sold = Copies_sold - OLD.Quantity
 	WHERE Book.ISBN = OLD.Book;
 	RETURN OLD;
 END;
