@@ -1,10 +1,8 @@
 const express = require("express");
 let router = express.Router();
 const db = require("../db/order-queries");
-const bookDb = require("../db/book-queries");
 
-router.get("/", checkLoggedIn, getAccountData, showCheckout);
-
+//make sure user is logged in
 function checkLoggedIn(req, res, next) {
     if(req.session.signedIn) next();
     else {
@@ -13,7 +11,18 @@ function checkLoggedIn(req, res, next) {
     }
 }
 
-//check account data
+//get checkout page
+router.get("/", checkLoggedIn, checkCheckoutAccess,  getAccountData, showCheckout);
+
+function checkCheckoutAccess(req, res, next) {
+    if(!req.session.cart) { 
+        req.app.locals.sendError(req, res, 400, "Cart empty");
+        return;
+    }
+    next();
+}
+
+//get account cards and addresses
 function getAccountData(req, res, next) {
     db.getAccountData(req.session.user.email, (err, results) => {
         if(err) {
@@ -27,6 +36,7 @@ function getAccountData(req, res, next) {
     });
 }
 
+//show first stage of checkout process
 function showCheckout(req, res) {
     res.statusCode = 200;
     res.redirect("/checkout/address");
@@ -35,7 +45,7 @@ function showCheckout(req, res) {
 
 
 //set address stage
-router.get("/address", checkLoggedIn, sendAddress);
+router.get("/address", checkLoggedIn, checkCheckoutAccess, sendAddress);
 
 function sendAddress(req, res) {
     res.status(200).render("checkout/address", {
@@ -43,6 +53,7 @@ function sendAddress(req, res) {
     });
 }
 
+//set the order address
 router.post("/address", (req, res) => {
     req.session.cart.address = req.body.address;
     res.sendStatus(204);
@@ -50,20 +61,30 @@ router.post("/address", (req, res) => {
 });
 
 
-//set card stage
-router.get("/billing", checkLoggedIn, getAccountData, sendCard);
 
-function sendCard(req, res) {
-    if(!req.session.cart.address) { //must set address first
+//set card stage
+router.get("/billing", checkLoggedIn, checkCardAccess, getAccountData, sendCard);
+
+function checkCardAccess(req, res, next) {
+    if(!req.session.cart) { 
+        req.app.locals.sendError(req, res, 400, "Cart empty");
+        return;
+    }
+    else if(!req.session.cart.address) { //must set address first
         res.statusCode = 401;
         res.redirect("/checkout");
         return;
     }
+    next();
+}
+
+function sendCard(req, res) {
     res.status(200).render("checkout/billing", {
         session: req.session
     });
 }
 
+//set order card
 router.post("/billing", (req, res) => {
     req.session.cart.card = req.body.card;
     res.sendStatus(204);
@@ -71,8 +92,23 @@ router.post("/billing", (req, res) => {
 });
 
 
-router.get("/confirm", checkLoggedIn, getAccountData, confirmStock, showConfirm);
+//confirm order page
+router.get("/confirm", checkLoggedIn, checkConfirmAccess, getAccountData, confirmStock, showConfirm);
 
+function checkConfirmAccess(req, res, next) {
+    if(!req.session.cart) { 
+        req.app.locals.sendError(req, res, 400, "Cart empty");
+        return;
+    }
+    else if(!req.session.cart.card) { //must set card first
+        res.statusCode = 401;
+        res.redirect("/checkout/billing");
+        return;
+    }
+    next();
+}
+
+//check books current status
 function confirmStock(req, res, next) {
     req.app.locals.refreshCart(req,res, next);
     return;
