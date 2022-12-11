@@ -49,6 +49,7 @@ function checkSignedIn(req, res, next) {
 
 
 //add a new address
+//NOTE: in an actual implementation a third-party service would be used here to ensure the entered address exists in the real world. It is not added here as it is outside the scope of the assignment
 router.post("/address", checkSignedIn, newAddress);
 
 function newAddress(req, res) {
@@ -80,7 +81,7 @@ function newCard(req, res) {
     db.newCard(Object.values(data), (err, id) => {
         if(err) {
             console.error(err.stack);
-            req.app.locals.sendError(req, res, 500, "Could not create new card");
+            req.app.locals.sendError(req, res, 500, "Could not create new card.");
             return;
         } 
         res.status(201).send({id: id});
