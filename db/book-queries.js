@@ -80,7 +80,6 @@ exports.getPopular = (page, callback) => {
     else query = getTopBooks; //prepared top 20
     
     db.query(query, (err, result) => {
-        console.log(result.rows.length);
         callback(err, result.rows);
     });
 }
