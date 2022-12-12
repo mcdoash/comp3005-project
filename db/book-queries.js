@@ -9,7 +9,7 @@ const getTopX = "SELECT " + listAttr + " FROM Storefront JOIN Authored ON Storef
 
 //get the top 20 books which are shown on hompage and when first browsing
 const getTopBooks = {
-    name: "getPopular", //prepared statment
+    name: "getPopular",
     text: getTopX,
     values: [booksPerPage, 0]
 }
