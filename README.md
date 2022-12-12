@@ -2,7 +2,7 @@
 By Ashley McDonald (101119938) 
 
 ## Running the application
-- Run `npm install` to install required modules
+- Run `npm install` in same folder to install required modules
 - Edit data in `/db/connection.json` for your postgres setup (user, password, port, etc.)
 - `/db/init.js` can be used to create the schema and populate it with fake data
     - Set `rebuildDb` true to drop all tables, functions, etc. from provided database (public schema) and build new ones
