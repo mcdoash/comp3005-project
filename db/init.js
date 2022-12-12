@@ -156,7 +156,7 @@ function createData() {
         while(isbns.includes(newIsbn)) {
             newIsbn = randIsbn();
         }
-        const stock = Math.floor(Math.random() * 25001);
+        const stock = Math.floor(Math.random() * 25000) + 10;
         isbns.push(newIsbn);
         stocks.push(stock);
 
