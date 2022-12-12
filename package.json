@@ -1,7 +1,7 @@
 {
   "name": "comp3005-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Final project for COMP3005A Fall 2022 by Ashley McDonald.",
   "main": "server.js",
   "dependencies": {
     "express": "^4.17.1",
@@ -11,8 +11,8 @@
     "pug": "^3.0.0"
   },
   "scripts": {
+    "init": "node db/init.js",
     "start": "node server.js"
   },
-  "author": "Ashley McDonald (101119938)",
-  "license": "ISC"
+  "author": "Ashley McDonald (101119938)"
 }
